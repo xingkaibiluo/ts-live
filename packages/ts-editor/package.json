@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "monaco": "^1.201704190613.0"
   }
 }

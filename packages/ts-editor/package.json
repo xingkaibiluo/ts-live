@@ -1,0 +1,22 @@
+{
+  "name": "ts-editor",
+  "version": "0.0.1",
+  "description": "> TODO: description",
+  "author": "dcx <duanchuanxu@bytedance.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/ts-editor.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "http://bnpm.byted.org/"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}

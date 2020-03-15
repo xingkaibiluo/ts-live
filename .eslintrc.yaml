@@ -1,0 +1,1152 @@
+---
+
+# TODO：以下规则是有争议、暂时没有支持、或者无需支持的
+#   - 基础规范
+#       - 2.5 [建议] 文件名建议全部 lower case，避免出现 upper case
+#   - JavaScript
+#       -
+#       - 2.2.2 [建议]  使用多行模板字符串时遵循缩进原则。当空行与空白字符敏感时，不使用多行模板字符串
+#       - 2.3.4 [建议]  不同行为或逻辑的语句集，使用空行隔开，更易阅读
+#       - 2.3.5 [强制]  解构多个变量时，如果变量数量超过3个或者单行字符超过 120 时，每个解构的变量必须单独一行
+#
+#   - TypeScript
+#       - ​2.12 [建议] 不允许使用 any
+
+
+# @typescript-eslint/parser可以同时解析TypeScript和Javascript
+parser: "@typescript-eslint/parser"
+extends:
+    - eslint:recommended
+    - plugin:import/errors
+    - plugin:import/warnings
+    - plugin:import/typescript
+
+# 使用最新的模块定义
+parserOptions:
+    ecmaVersion: 2018
+    sourceType: module
+    ecmaFeatures:
+        modules: true
+        jsx: true
+    project: "./tsconfig.json"
+
+# 配置环境：支持浏览器 + Node + Jest
+env:
+    browser: true
+    jest: true
+    node: true
+    es6: true
+
+globals:
+    renderHook: true
+    renderWrapperHook: true
+
+# 配置对React、EsModules和TypeScript的支持
+plugins:
+    - react
+    - import
+    - "react-hooks"
+    - "@typescript-eslint"
+
+rules:
+    no-control-regex:
+        - off
+    #（基础规范） 2.1 [强制] 文件使用无 `BOM` 的 `UTF-8` 编码
+    unicode-bom:
+        - error
+
+    # 2.2 （基础规范）[强制] 使用 `空格(Space)` 缩进，不允许使用 Tab
+    # 2.3 （基础规范）[强制] 使用 `4` 个空格做为一个缩进层级
+    # 2.2.1 （JavaScript）[强制]  ​switch​ 下的 ​case​ 和 ​default​ 必须增加一个缩进层级
+    # todo
+
+    # 2.4 （基础规范）[建议] 每行最大的列宽控制在 `120` 个字符以内
+    #    - 1. 一个 URL 地址、 Bash 脚本、正则表达式等等（不允许换行）
+    # NOTICE:
+    #    - import语句应当遵循单行120字符的规定
+    #    - 注释应当遵循单行120字符的规定，太长的注释可以写成多行
+    max-len:
+        - error
+        -   code: 120
+            ignoreUrls: true
+            ignoreRegExpLiterals: true
+
+    # 2.2.3 （JavaScript）[强制]  二元运算符两侧必须有一个空格，一元运算符与操作对象之间不允许有空格
+    space-infix-ops:
+        - error
+
+    # 2.2.3 （JavaScript）[强制]  二元运算符两侧必须有一个空格，一元运算符与操作对象之间不允许有空格
+    space-unary-ops:
+        - error
+
+    # 2.2.4 （JavaScript）[强制]  用作代码块起始的左花括号 ​{​ 前必须有一个空格
+    space-before-blocks:
+        - error
+        - always
+
+    # 2.2.5 （JavaScript）[强制] 关键字后，必须有一个空格
+    keyword-spacing:
+        - error
+        -   before: true
+            after: true
+
+    # 2.2.6 （JavaScript）[强制]  在对象创建时，属性中的 ​:​ 之后必须有空格，​:​ 之前不允许有空格
+    key-spacing:
+        - error
+        -   beforeColon: false
+            afterColon: true
+
+    # 2.2.7 （JavaScript）[强制]  函数声明、具名函数表达式、函数调用中，函数名和 ​(​ 之间不允许有空格
+    space-before-function-paren:
+        - error
+        -   anonymous: always
+            named: never
+
+    # 2.2.8 （JavaScript）[强制]  ​,​ 和 ​;​ 前不允许有空格。如果不位于行尾，​,​ 和 ​;​ 后必须跟一个空格
+    semi-spacing:
+        - error
+        -   before: false
+            after: true
+
+    # 2.2.8 （JavaScript）[强制]  ​,​ 和 ​;​ 前不允许有空格。如果不位于行尾，​,​ 和 ​;​ 后必须跟一个空格
+    comma-spacing:
+        - error
+        -   before: false
+            after: true
+
+    # 2.2.9 （JavaScript）[强制]  在函数调用、函数声明、单行声明的数组、括号表达式、属性访问、​if / for / while / switch / catch​ 等语句中，​()​ 和 ​[]​ 内紧贴括号部分不允许有空格
+    space-in-parens:
+        - error
+        - never
+
+    # 2.2.9 （JavaScript）[强制]  在函数调用、函数声明、单行声明的数组、括号表达式、属性访问、​if / for / while / switch / catch​ 等语句中，​()​ 和 ​[]​ 内紧贴括号部分不允许有空格
+    array-bracket-spacing:
+        - error
+        - never
+
+    # 2.2.9 （JavaScript）[强制]  在函数调用、函数声明、单行声明的数组、括号表达式、属性访问、​if / for / while / switch / catch​ 等语句中，​()​ 和 ​[]​ 内紧贴括号部分不允许有空格
+    computed-property-spacing:
+        - error
+        - never
+    # 2.2.9 [强制]  在函数调用、函数声明、单行声明的数组、括号表达式、属性访问、​if / for / while / switch / catch​ 等语句中，
+    # ​()​ 和 ​[]​ 内紧贴括号部分不允许有空格 TODO（规范内容比实际多）
+    no-spaced-func: 2
+
+    # ​2.2.10 （JavaScript）[强制]  使用 ​generator​ 时，​*​ 前面不允许有空格，​*​ 后面必须有一个空格
+    generator-star-spacing:
+        - error
+        -   before: false
+            after: true
+
+    # 2.2.11 (override)（JavaScript）[强制] 单行对象的大括号内侧要保留一个空格。
+    #   - 这里按部门规范，暂时确定为不允许加括号，如果要和上边标准一致，可以自行修改为如下
+    #   object-curly-spacing:
+    #        - error
+    #        - always
+    object-curly-spacing:
+        - error
+        - never
+
+    # 2.2.11 (override)（JavaScript）[强制] 单行对象的大括号内侧要保留一个空格。
+    #   - 这里按部门规范，暂时确定为不允许加括号，如果要和上边标准一致，可以自行修改为如下
+    #   template-curly-spacing:
+    #        - error
+    #        - always
+    template-curly-spacing:
+        - error
+        - never
+
+    # 2.3.1 （JavaScript）[强制]  每个独立语句结束后必须换行
+    max-statements-per-line:
+        - error
+        -   max: 1
+
+    # 2.3.2 （JavaScript）[强制]  运算符处换行时，运算符必须在新行的行首
+    operator-linebreak:
+        - error
+        - before
+
+    # 2.3.3 （JavaScript）[强制]  在函数声明、函数表达式、函数调用、对象创建、数组创建、​for​ 语句等场景中，不允许在 ​,​ 或 ​;​ 前换行
+    comma-style:
+        - error
+        - last
+
+    # 2.3.3 （JavaScript）[强制]  在函数声明、函数表达式、函数调用、对象创建、数组创建、​for​ 语句等场景中，不允许在 ​,​ 或 ​;​ 前换行
+    semi-style:
+        - error
+        - last
+
+    # 2.3.6 （JavaScript）[强制] else 语句不允许换行
+    brace-style:
+        - error
+        - 1tbs
+
+    # 2.4.1 （JavaScript）[强制]  ​变量​、​函数​、函数的 ​参数​ 使用 ​Camel命名法
+    # todo camelcase
+
+    #2.5.2 [强制]  语句末尾添加分号 TODO（纷争）
+    #  todo  semi:
+
+
+    # 2.6.2 [强制]  箭头函数的参数只有一个，并且不包含解构时，参数部分的括号必须省略
+    arrow-parens:
+        - 2
+        - as-needed
+    # 3.1.1 [强制]  使用 ​let​ 和 ​const​ 定义变量，不使用 ​var​
+    no-var:
+        - 2
+    # 3.1.2 [强制]  变量、函数在使用前必须先定义
+    # todo    no-use-before-define:
+
+    # 3.1.3 [强制] 每次只能声明一个变量，禁止使用保留字作为变量名，首次声明时禁止将​undefined​ 赋值给变量，禁止连续赋值 TODO
+    no-undef-init: 2
+    # 3.1.3 [强制]  每次只能声明一个变量，禁止使用保留字作为变量名，首次声明时禁止将​undefined​ 赋值给变量，禁止连续赋值 TODO
+    one-var:
+        - 2
+        - never
+    # 3.5.4 [建议] 使用 ​parseInt​ 时，必须填写第二个参数来声明进制选项
+    radix: 2
+    # 3.6.4 [强制] 不要使用 ​\​ 进行多行接续
+    no-multi-str: 1
+    # 3.7.5 [建议]  属性访问时，尽量使用 ​.​。对于不符合Identifier的命名的情况（如后端接口返回的数据），可以使用[expr]形式。 TODO
+    dot-notation:
+        - 2
+        -   allowKeywords: true
+            allowPattern: "^catch$"
+    # 3.7.8 [建议]   使用 Object.keys 或 Object.entries 进行对象遍历，不推荐使用 for .. in 进行对象的遍历，
+    #                可以避免遗漏 hasOwnProperty 而产生的错误
+    guard-for-in: 1
+    # 3.8.1 [强制] 使用数组字面量 ​[]​ 创建新数组 TODO（禁用Array构造函数，和规则3.8.1接近）
+    # no-array-constructor
+    # [建议] 函数中允许的最大语句数
+    max-statements:
+        - warn
+        - 50
+    # [强制] 文件以换行符结尾
+    eol-last:
+        - error
+        - always
+    # 禁用多个空行
+    no-multiple-empty-lines:
+        - error
+        -   max: 2
+            maxEOF: 1
+            maxBOF: 0
+    # [强制] 禁止在行尾添加尾随空格，不允许空行上尾随空格，不允许在注释块中使用尾随空格
+    no-trailing-spaces:
+        - error
+        -   skipBlankLines: false
+            ignoreComments: false
+    # [建议] 不允许使用console
+#    no-console: 1
+    # 在条件中禁用常量表达式
+    no-constant-condition: 1
+    # [强制] 禁止使用尾随逗号（与JS规范有出入）TODO
+    comma-dangle: 2
+    # 禁用debugger
+    no-debugger: 2
+    # [强制] 禁止对象中出现重复键
+    no-dupe-keys: 1
+    # 在正则表达式中禁用空字符类
+    no-empty-character-class: 2
+    # [强制] 禁止在catch中为异常参数重新赋值
+    no-ex-assign: 2
+    # 建议不用不必要的布尔类型转换
+    no-extra-boolean-cast: 1
+    # [建议] 禁止为function声明重新分配值
+    no-func-assign: 1
+    # 禁止在嵌套的语句块中出现变量或 function 声明 (no-inner-declarations)
+    no-inner-declarations: 1
+    # [强制] 禁止RegExp构造函数中的无效正则表达式字符串
+    no-invalid-regexp: 2
+    # 禁止否定in表达式中的左操作数
+    no-negated-in-lhs: 2
+    # [强制] 禁止将全局对象属性调用为函数
+    no-obj-calls: 2
+    # 禁止数组包含缺失的元素
+    no-sparse-arrays: 2
+    # [强制] 不允许可达代码后return,throw,continue,break
+    no-unreachable: 2
+    # [强制] 使用isNaN()检查NaN
+    use-isnan: 2
+    # [强制] 强制将typeof表达式与有效字符串进行比较
+    valid-typeof: 2
+    # [强制] 代码块使用大括号包裹
+    curly:
+        - 2
+        - all
+    # 3.3.1 [强制] 在 Equality Expression 中使用类型严格的 ===
+    # 3.3.2 [建议] 当判断null或者undefined时，允许使用 == null
+    eqeqeq:
+        - 2
+        - allow-null
+    # [建议] if块包含return语句，省去不必要else块
+    no-else-return: 1
+    # [建议] 禁用标签语句
+    no-labels:
+        - 1
+        -   allowLoop: true
+    # [禁止] 禁止直接修改内置对象原型
+    no-extend-native: 2
+    # [建议] 避免不必要的使用bind
+    no-extra-bind: 1
+    # [禁止] 消除隐含的eval()通过使用setTimeout(),setInterval()或execScript，在给任何一个函数与字符串一起用作第一个参数时发出警告
+    no-implied-eval: 1
+    # [强制] 禁用迭代器_iterator_
+    no-iterator: 2
+    no-irregular-whitespace: 1
+    # [建议] 禁用不必要的嵌套块
+    no-lone-blocks: 1
+    # [建议] 禁止循环中的函数
+    no-loop-func: 1
+    # [禁止] 禁止修改只读全局变量
+    no-native-reassign: 2
+    # [强制] 禁用new创建包裹实例
+    no-new-wrappers: 2
+    # [建议] 禁止八进制文字
+    no-octal: 1
+    # [建议] 禁止在字符串字面量中使用八进制转义序列
+    no-octal-escape: 1
+    # [禁止] 禁止使用_proto_
+    no-proto: 2
+    # [建议] 建议不要重重复声明变量
+    no-redeclare: 1
+    # [禁止] 禁止自我比较
+    no-self-compare: 2
+    # [强制] 禁止可以表达为更简单结构的三元操作符
+    no-unneeded-ternary: 2
+    # 3.14.3 [强制] 不要使用with
+    no-with: 1
+    # 2.6.1 [强制] IIFE必须在函数表达式外添加(，非IIFE不得在函数表达式外添加(
+    wrap-iife:
+        - 2
+        - any
+    # [建议] 禁止删除变量
+    no-delete-var: 1
+    # [禁止] 禁止在function定义重复参数
+    no-dupe-args: 2
+    # [强制] 禁止重复case标签
+    no-duplicate-case: 2
+    # [建议] 禁止创建与范围内的变量共享名称的标签
+    no-label-var: 1
+    # [强制] 关键字不能被遮蔽
+    no-shadow-restricted-names: 2
+    # [禁止] 禁止未声明变量
+    no-undef: 2
+    # [强制] 禁止未使用过的变量
+    # todo no-unused-vars
+
+    # [建议] 在调用不带参数的构造函数时需要括号
+    new-parens: 1
+    # [强制] 禁止出现多个空格。属性，二元表达式，变量声明除外
+    no-multi-spaces:
+        - 2
+        -   exceptions:
+                Property: true
+                BinaryExpression: true
+                VariableDeclarator: true
+    # [禁止] 禁止使用Object构造函数
+    no-new-object: 2
+    # 禁止冗余的括号
+    #    - functions: 只在函数表达式周围禁止不必要的圆括号
+    # TODO no-extra-parens
+    # [禁止] 禁止使用混合空格和制表符进行缩进
+    no-mixed-spaces-and-tabs: 2
+    # [强制] 强制一致使用单引号
+    quotes:
+        - 2
+        - single
+
+    spaced-comment:
+        - 2
+        - always
+        -   exceptions:
+                - "-"
+                - "+"
+                - "\""
+            block:
+                balanced: true
+    # 3.13.1 [建议] 回调函数的嵌套不得超过3层
+    max-nested-callbacks:
+        - 1
+        - 3
+    # [强制] 强制块语句的最大可嵌套深度
+    max-depth:
+        - 1
+        - 6
+    # 3.9.2 [建议] 一个函数的参数控制在6个以内，且对于超宽的函数签名进行换行处理；超过六个参数的情况要把参数封装成对象传入
+    max-params:
+        - 1
+        - 6
+    # [强制]要求箭头函数的箭头之前或之后有空格
+    arrow-spacing: 2
+    constructor-super: 2
+    # [强制] 禁止箭头功能，可能会与比较混淆
+    no-confusing-arrow:
+        - 2
+        -   allowParens: true
+    # [建议] 不允许修改类声明的变量
+    no-class-assign: 1
+    # [禁止] 禁止修改使用const声明的变量
+    no-const-assign: 2
+    # [建议] 不允许类成员中有重复的名称
+    no-dupe-class-members: 1
+    # [建议] 在构造函数中调用之前不允许使用this/super关键字super()
+    no-this-before-super: 1
+    # [建议] 禁止重复导入
+    no-duplicate-imports: 1
+    # 3.9.5 [建议] 不要使用arguments对象，应用...args代替
+    prefer-rest-params: 2
+    #
+    # [初稿] React 代码规范背景
+    # 1 命名规范
+    #   1.1 组件命名规范
+    #       1.1.1 [建议] 普通组件命名
+    #       1.1.2 [建议] 使用 withXxx 或 xxxable 形式的词作为高阶组件的名称
+    #       1.1.3 [强制] 组件名称与文件名、文件夹名保持相同
+    #   1.2 Hooks 命名规范
+    #       1.2.1 [强制] Hook 组件文件名应以 useXXXX 命名，use 开头驼峰形式
+    #       1.2.2 [建议] useRef 返回的变量名以 Ref 结尾
+    #   1.3 props 命名规则
+    #       1.3.2 [建议] 如果一个函数是一个自渲染函数（返回的是 ReactNode 类型），使用 renderXXX 命名
+    #   1.4 组件方法命名规则
+    #
+    # 2 组件实现规范
+    #   2.1 React API、生命周期相关规范
+    #       2.1.2 [建议] 除了 componentDidMount componentWillUnmount componentDidUpdate 三个生命周期，禁止出现 window、document、navigator 这类浏览器器的全局变量
+    #       2.1.6 [强制] 禁止在 getDerivedStateFromProps 中，没有判断条件地返回特定 state，且至少返回 null
+    #       2.1.13 [建议]TSX中，组件方法需要声明public & private，包括生命周期，遵循TS规范
+    #       2.1.14 [建议] 每个组件都要写 propTypes，TSX 中可以省略
+    #   2.2 JSX 相关规范
+    #       2.2.5 [强制] 以字符串字面量作为值的属性使用双引号"，在其它类型表达式中的字符串使用单引号'
+    #
+    #   2.3 成员属性、成员函数规则
+    #       2.3.3 [强制] 使用 Class Property 语法声明 propsTypes、contextTypes、defaultProps 和 state
+    #   2.4 Hooks 规范
+    #       2.4.1 [强制] 自定义 Hook 中必须直接或间接包含至少一个 React Hook
+    #       2.4.2 [强制] 只在顶层调用 Hooks。不要在循环、条件语句或嵌套函数中调用 Hooks
+    #       2.4.3 [建议] useEffect、useMemo、useCallback 的 deps 参数必须包含所有 callback 方法中用到的变量
+    #       2.4.4 [建议] useRef 的 React.Ref 对象，在访问时，不要用 someRef.current 访问，而应该先取到某个变量中访问
+    #       2.4.5 [强制] 只在 React 函数或自定义 hooks 中调用 hooks
+    #   2.5 组件声明
+    #       2.5.2 [建议] 使用箭头函数声明函数组件
+    #       2.5.3 [建议] 高阶组件返回新的组件类型时，添加 displayName 属性
+    #   2.6 组件实现规范
+    #       2.6.1 [建议] 除顶层或路由级组件以外，所有组件均在概念上实现为纯组件
+    #       2.6.3 [建议] 为函数组件添加 PureComponent 能力
+    #       2.6.4 [建议] 优先使用 Functional Component + hooks
+    # 3 文件组织
+    #   3.1 组件目录
+    #       3.1.1 [强制] 组件以单个文件夹目录维护，有且只有一个 index 文件
+    #       3.1.2 [强制] 同一目录下不得拥有同名的 .js、. jsx 和 .tsx 文件
+    #       3.1.3 [强制] 组件文件使用一致的 .jsx、.tsx后缀
+    #       3.1.4 [建议] 每一个文件以 export default 的形式暴露一个组件
+    # 4 特定第三方库、特定场景规范
+    #   4.1 react-redux 相关
+    #       4.1.1 [建议] connect 参数使用建议命名
+    #       4.1.2 [建议] mapDispatchToProps 参数使用建议命名
+    #       4.1.3 [建议] mapStateToProps 参数使用建议命名
+    #       4.1.4 [建议] 禁止将整个 store 对象绑定到组件
+    #       4.1.5 [建议] 如果使用的 React 版本支持 hook，在 FunctionComponent 中，使用 react-redux@^7.1.0 的 hook 来节省范式代码
+    #   4.2 styled-components
+    #       4.2.1 [强制] 禁止在 Array map 中使用非 static styled-components，应使用 attrs
+    #       4.2.2 [强制] 禁止在 render、React.FC 中使用 styled 声明新的 component
+    #   4.3 antd
+    #       4.3.1 [强制] Form 组件禁止使用 getFieldProps getFieldDecorator 声明了 ReactElement 但不渲染
+    #       4.3.2 [强制] Form 组件禁止 getFieldProps getFieldDecorator 使用重复 id
+    #       4.3.3 [强制] Form 组件禁止切换组件 type 渲染同一个 id
+    #   4.4 TypeScript
+    #       4.4.1 [建议] 尽量提供完整的泛型
+    # 5 HTML 相关
+    #   5.1 a11y 相关
+    #       5.1.1 [建议] 如果文本中有 emoji 字符，使用 <span> 标签包裹它，并设置role="img" aria-label="emojiname"
+    #       5.1.2 [建议] input[type=image]、img、area、object 标签添加必要的内容说明属性（alt、title、aria-label）
+    #       5.1.3 [建议] <a> 标签必须有内容
+    #       5.1.4 [建议] <a> 标签如果没有有意义的 href，建议换成 button
+    #
+
+    # 2.2.11 [强制] 组件必须提供命名，高阶组件生成的组件需要指定 displayName
+    # TODO
+    react/display-name: 0
+    # 2.2.8 [强制] 使用button组件时，必须包含type属性
+    react/button-has-type: 2
+    # 2.3.5 [强制] 使用解构获取 state、props、context 中的属性
+    react/destructuring-assignment: 2
+    # 2.1.7 [建议] 禁止 this.setState 中使用 this.state
+    react/no-access-state-in-setstate: 1
+    # 2.1.9 [强制] 禁止在 PureComponent 中设置 shouldComponentUpdate 方法
+    react/no-redundant-should-component-update: 2
+    # 2.2.10 [强制] 无状态函数组件（FC）中，不允许使用 this
+    react/no-this-in-sfc: 2
+    # 2.1.1 [强制] 不要使用 UNSAFE_componentWillMount、UNSAFE_componentWillReceiveProps、UNSAFE_componentWillUpdate 的生命周期
+    react/no-unsafe: 2
+    # 关闭对自定义组件不存在的属性设置提醒
+    react/forbid-component-props: 0
+    # 关闭禁用dom的设置
+    react/forbid-elements: 0
+    # 2.3.1 [强制] 禁止使用属性访问的方式使用其他组件的 propTypes
+    react/forbid-foreign-prop-types: 2
+    # TODO
+    react/forbid-prop-types: 1
+    # 2.2.6 [强制] 对于值为true的属性，省去值部分
+    react/jsx-boolean-value:
+        - 2
+        - never
+
+    # 2.2.2 [强制] 保持起始和结束标签在同一层缩进。
+    react/jsx-closing-bracket-location:
+        - 2
+        - line-aligned
+    # jsx属性前后没有空格
+    react/jsx-curly-spacing:
+        - 2
+        - never
+    # 2.2.3 [强制] JSX中的props缩进为4个空格，且props与value之间的等号前后禁止有空格。
+    react/jsx-equals-spacing:
+        - 2
+        - never
+    # 后缀只能是如下配置
+    react/jsx-filename-extension:
+        - 2
+        -   extensions:
+                - ".jsx"
+                - ".tsx"
+    # 2.2.16 [建议] 对于多属性需要换行，从第一个属性开始，每个属性一行
+    react/jsx-first-prop-new-line:
+        - 2
+        - multiline-multiprop
+    # 1.3.1 [建议] 使用 onXxx 形式作为 props 中用于回调的属性名称
+    # 1.4.1 [建议] 作为组件方法的事件处理函数以具备业务含义的词作为名称，使用 handleXxx 形式命名
+    react/jsx-handler-names:
+        - 1
+        -   eventHandlerPrefix: "handle"
+            eventHandlerPropPrefix: 'on'
+    # 2.2.3 [强制] JSX中的props缩进为4个空格
+    react/jsx-indent-props:
+        - 2
+        - 4
+    # 2.2.3 [强制] JSX中的props缩进为4个空格
+    react/jsx-indent:
+        - 2
+        - 4
+    # 数组项必须有key
+    react/jsx-key: 2
+    # 属性排列多行，每个最多一个属性设置
+    react/jsx-max-props-per-line:
+        - 2
+        -   when: multiline
+    # 2.2.7 [强制] 避免在JSX的属性值中直接使用对象和函数表达式。
+    react/jsx-no-bind:
+        - 2
+        -   ignoreRefs: false
+            allowArrowFunctions: true
+            allowBind: false
+    # 建议不直接使用注释元素
+    react/jsx-no-comment-textnodes: 1
+    # 不能出现同名属性
+    react/jsx-no-duplicate-props:
+        - 2
+        -   ignoreCase: true
+    # 关闭jsx中直接使用字符串
+    react/jsx-no-literals: 0
+    # 2.2.9 [建议] <a> 标签如果指定 target="_blank"，如果 href 是完整的 http 地址，必须同时指定 rel="noreferrer noopener"
+    react/jsx-no-target-blank:
+        - 1
+        -   enforceDynamicLinks: always
+    # 禁止使用为定义的变量
+    react/jsx-no-undef: 2
+    # 1.1.1 [建议] 普通组件命名
+    react/jsx-pascal-case:
+        - 2
+        -   allowAllCaps: true
+    # 不开启属性排序
+    react/jsx-sort-props: 0
+    # 2.2.4 [强制] 自闭合标签的/>前添加一个空格。
+    react/jsx-tag-spacing:
+        - 2
+        -   closingSlash: never
+            beforeSelfClosing: always
+            afterOpening: never
+    # TODO
+    react/jsx-uses-react: 0
+    # 不能有未使用的变量
+    react/jsx-uses-vars: 2
+    # jsx所有标签都新起一行
+    react/jsx-wrap-multilines:
+        - 2
+        -   declaration: true
+            assignment: true
+            return: true
+            arrow: true
+            prop: true
+    # 2.2.17 [建议] 将JSX的层级控制在3层以内。
+    react/jsx-max-depth:
+        - 1
+        -   max: 3
+    # fragment必须以标签形式使用
+    react/jsx-fragments:
+        - 2
+        - element
+    # 2.2.12 [强制] 禁止使用数组的 index 作为 key
+    react/no-array-index-key: 2
+    # 禁止传递children prop
+    react/no-children-prop: 1
+    # 2.2.14 [强制] 禁止在使用了 dangerouslySetInnerHTML 的组件内添加 children
+    react/no-danger-with-children: 2
+    # 建议不使用dangerouslySetInnerHTML
+    react/no-danger: 1
+    # 2.1.8 [强制] 禁止使用已废弃的方法或属性
+    react/no-deprecated: 2
+    # 2.1.4 [强制] 禁止在 componentDidMount componentDidUpdate 时没有判断条件地调用 setState
+    react/no-did-mount-set-state: 2
+    # 2.1.4 [强制] 禁止在 componentDidMount componentDidUpdate 时没有判断条件地调用 setState
+    react/no-did-update-set-state: 2
+    # 2.1.3 [强制] 禁止在 componentWillUnmount 时 setState
+    react/no-will-update-set-state: 2
+    # 2.1.5 [强制] 禁止直接修改 this.state
+    react/no-direct-mutation-state: 2
+    # 2.1.8 [强制] 禁止使用已废弃的方法或属性
+    react/no-find-dom-node: 2
+    # 2.1.8 [强制] 禁止使用已废弃的方法或属性
+    react/no-is-mounted: 2
+    # 关闭一个文件只能定义一个Component
+    react/no-multi-comp:
+        - 0
+        -   ignoreStateless: true
+    # 2.1.10 [强制] 禁止使用ReactDOM.render方法的返回值
+    react/no-render-return-value: 2
+    # 受控组件
+    react/no-set-state: 0
+    # 2.1.11 [强制] 禁止使用字符串ref
+    react/no-string-refs: 2
+    # 建议使用转义字符
+    react/no-unescaped-entities: 1
+    # 禁止使用不存在的属性
+    react/no-unknown-property: 2
+    # 禁止出现未使用的属性
+    react/no-unused-prop-types: 0
+    # 必须使用es6 class的方式声明组件，禁止使用createReactClass
+    react/prefer-es6-class:
+        - 2
+        - always
+    # 2.5.1 [强制] 优先使用函数组件。当需要使用 componentDidCatch 时，可考虑使用 ClassComponent
+    react/prefer-stateless-function: 2
+
+    # TODO
+    react/prop-types:
+        - off
+
+    # 2.2.13 [强制] jsx、tsx 文件中必须引用 react
+    react/react-in-jsx-scope: 2
+
+    # 2.3.2 [强制] 为 props 中所有非必传属性定义 defaultProps，对于 PropTypes 设置为 isRequired 的属性不需要设置 defaultProps
+    react/require-default-props: 2
+
+    # 2.6.2 [建议] 为非继承自 PureComponent 的纯组件实现 shouldComponentUpdate 方法
+    react/require-optimization: 1
+
+    # 2.3.4 [强制] component 必须有 render 方法，且 render 方法必须有返回
+    react/require-render-return: 2
+
+    # 2.2.1 [强制] 没有子节点的非DOM组件使用自闭合语法。
+    react/self-closing-comp:
+        - 2
+        -   component: true
+            html: true
+
+    # 2.1.12 [建议] 声明周期的书写顺序
+    react/sort-comp:
+        - 1
+        -   order:
+                - static-properties
+                - static-methods
+                - lifecycle
+                - everything-else
+                - render
+            groups:
+                static-properties:
+                    - displayName
+                    - propTypes
+                    - contextTypes
+                    - childContextTypes
+                    - mixins
+                    - statics
+                lifecycle:
+                    - defaultProps
+                    - constructor
+                    - getDefaultProps
+                    - getInitialState
+                    - state
+                    - getChildContext
+                    - componentWillMount
+                    - componentDidMount
+                    - componentWillReceiveProps
+                    - shouldComponentUpdate
+                    - componentWillUpdate
+                    - componentDidUpdate
+                    - componentWillUnmount
+
+
+    # ReactHooks基础
+    "react-hooks/rules-of-hooks":
+        - error
+
+    # ReactHooks强制依赖检查
+    "react-hooks/exhaustive-deps":
+        - 0
+
+    # 不开启props排序
+    react/sort-prop-types: 0
+
+    # 2.2.15 [强制] JSX.Element 如果有 style 属性，值必须是对象
+    react/style-prop-object: 2
+
+    # 自闭合Dom元素没有children属性
+    react/void-dom-elements-no-children: 2
+
+    # import文件必须存在
+    import/no-unresolved: 2
+
+    # 引用的变量在对应模块中是声明存在的
+    import/named: 2
+    # import default模块必须存在
+    import/default: 2
+    # 2.6 [强制] 使用标准 import
+    # TODO 暂时关闭
+    import/namespace: 0
+    # TODO
+    import/no-restricted-paths: 0
+    # 禁止使用绝对路径引用模块
+    import/no-absolute-path: 2
+    # 建议不使用动态变量引用模块
+    import/no-dynamic-require: 1
+    # 不阻止内部模块的引用
+    import/no-internal-modules: 0
+    # 建议不使用webpack loader的引用语法
+    import/no-webpack-loader-syntax: 1
+    # 不能重复export相同变量
+    import/export: 2
+    # 不开启未命名的default模块的引用检查
+    import/no-named-as-default: 0
+    # 禁止使用default导出对象访问其他的导出变量
+    import/no-named-as-default-member: 2
+    # 禁用JSDoc deprecated标签和TomDoc Deprecated注释
+    import/no-deprecated: 2
+    # 关闭未关联成功的依赖包的报错提醒
+    import/no-extraneous-dependencies: 0
+    # 关闭变量导出提醒
+    import/no-mutable-exports: 0
+    # 禁止含糊不清的导出规则
+    import/unambiguous: 2
+    # 建议不使用commonjs的引用方式
+    import/no-commonjs: 1
+    # 建议不适用amd的引用方式
+    import/no-amd: 1
+    # 可以使用node.js内部支持的指令
+    import/no-nodejs-modules: 0
+    # 引用必须在文件头部
+    import/first: 2
+    # 不能重复引用
+    import/no-duplicates: 2
+    # 2.1.1 [建议]  ESNext 语法的 JavaScript 文件使用 ​.js​ 扩展名
+    # 2.1.2 [建议]  当文件无法使用 ​.js​ 扩展名时，使用 ​.mjs​ 扩展名
+    import/extensions:
+        - 2
+        -   ".js": never,
+            ".jsx": never,
+            ".ts": never,
+            ".tsx": never,
+            ".mjs": never
+    # 引用强制按照顺序
+    import/order: 2
+
+    sort-imports:
+        - error
+        -   ignoreDeclarationSort: true
+
+    # import后必须是新行
+    import/newline-after-import: 2
+    # 关闭对单导出变量必须是default的提醒
+    import/prefer-default-export: 0
+    # 不开启最大引用模块个数控制
+    import/max-dependencies: 0
+    # 禁止未使用模块引用
+    import/no-unassigned-import: 0
+    # 禁止引用时重命名default变量
+    import/no-named-default: 2
+
+    # todo
+    #    no-useless-constructor: 2
+
+    #   todo func-call-spacing:
+    #        - off
+    #  no-empty-function todo
+
+    # fecs check
+    no-eval: 2
+    no-extra-semi: 2
+    arrow-body-style:
+        - 1
+        - as-needed
+
+    # region TypeScript
+
+    # 重载应当写在一起
+    "@typescript-eslint/adjacent-overload-signatures":
+        - error
+
+    # 数组类型规则（尽可能使用简单类型）
+    "@typescript-eslint/array-type":
+        - error
+        -   default: array-simple
+            readonly: generic
+
+    # [强制]不能await非Promise对象
+    "@typescript-eslint/await-thenable":
+        - error
+
+    # ​2.1 [强制] 不允许使用 ts-ignore
+    "@typescript-eslint/ban-ts-ignore":
+        - error
+
+    # 3.2 [强制] 基本类型声明使用小写
+    "@typescript-eslint/ban-types":
+        - error
+        -   types:
+                String:
+                    message: 'Use string instead'
+                    fixWith: 'string'
+                Boolean:
+                    message: 'Use boolean instead'
+                    fixWith: 'boolean'
+                Number:
+                    message: 'Use number instead'
+                    fixWith: 'number'
+                Object:
+                    message: 'Use Record<string, any> instead'
+                    fixWith: 'Record<string, any>'
+                Symbol:
+                    message: 'Use symbol instead'
+                    fixWith: 'symbol'
+                object:
+                    message: 'Use Record<string, any> instead'
+                    fixWith: 'Record<string, any>'
+
+    # [强制] 覆盖JavaScript的同名规范
+    camelcase:
+        - off
+
+    "@typescript-eslint/camelcase":
+        - error
+
+    # [强制] 类必须以使用PascalCase命名法，补充增强JS规则new-cap
+    "@typescript-eslint/class-name-casing":
+        - error
+
+    # 2.3 [强制] 使用 as 代替类型转换
+    "@typescript-eslint/consistent-type-assertions":
+        - error
+        -   assertionStyle: as
+            objectLiteralTypeAssertions: never
+
+    # [强制] 使用 interface 代替 type
+    "@typescript-eslint/consistent-type-definitions":
+        - error
+        - interface
+
+    # [强制] 主动声明函数的返回类型（考虑到书写习惯问题，只对主动声明的类型进行检查）
+    "@typescript-eslint/explicit-function-return-type":
+        - error
+        -   allowExpressions: true
+            allowTypedFunctionExpressions: true
+
+    # 2.6 [强制] 对于非 public 的 class 属性要显式地添加 modifiers
+    "@typescript-eslint/explicit-member-accessibility":
+        - error
+        -   accessibility: explicit
+            overrides:
+                constructors: no-public
+
+    # [强制] 覆盖JavaScript的同名规范
+    func-call-spacing:
+        - off
+
+    "@typescript-eslint/func-call-spacing":
+        - error
+
+    # [强制] 泛型变量命名全部大写
+    "@typescript-eslint/generic-type-naming":
+        - error
+        - "^[A-Z]+$"
+
+    # [强制] 覆盖JavaScript的同名规范
+    indent:
+        - off
+
+    "@typescript-eslint/indent":
+        - error
+        - 4
+        -   SwitchCase: 1
+
+    # 3.4 [建议] 命名 interface 不需要带 I 前缀
+    "@typescript-eslint/interface-name-prefix":
+        - off
+
+    # 3.5 [强制] 使用分号分割属性
+    "@typescript-eslint/member-delimiter-style":
+        - error
+        -   multiline:
+                delimiter: "semi"
+                requireLast: true
+            singleline:
+                delimiter: "semi"
+                requireLast: false
+
+    # 3.5 [建议] 私有属性和函数需要用下划线前缀
+    # 强制不加了，首字母强制使用字符
+    "@typescript-eslint/member-naming":
+        - error
+        -   private: "^[a-zA-Z]"
+            public: "^[a-zA-Z]"
+            protected: "^[a-zA-Z]"
+
+    # 3.6 [建议] 指定类成员的排序规则
+    "@typescript-eslint/member-ordering":
+        - error
+        -   default:
+                - public-static-field
+                - protected-static-field
+                - private-static-field
+                - public-static-method
+                - protected-static-method
+                - private-static-method
+                - public-instance-field
+                - protected-instance-field
+                - private-instance-field
+                - public-constructor
+                - protected-constructor
+                - private-constructor
+                - public-instance-method
+                - protected-instance-method
+                - private-instance-method
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-array-constructor:
+        - off
+
+    "@typescript-eslint/no-array-constructor":
+        - error
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-empty-function:
+        - off
+
+    "@typescript-eslint/no-empty-function":
+        - error
+
+    # [强制] 不支持空接口
+    "@typescript-eslint/no-empty-interface":
+        - error
+
+    # ​2.12 [建议] 不允许使用 any
+    "@typescript-eslint/no-explicit-any":
+        - warn
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-extra-parens:
+        - off
+
+    "@typescript-eslint/no-extra-parens":
+        - error
+        - functions
+
+    # [强制] 不允许使用空类、静态类
+    "@typescript-eslint/no-extraneous-class":
+        - error
+        -   allowConstructorOnly: false
+            allowEmpty: false
+            allowStaticOnly: false
+
+    # [强制] 不允许不处理Promise的返回值
+    "@typescript-eslint/no-floating-promises":
+        - warn
+
+    # [强制] 不允许使用for-in来迭代数组，用for，for-of或者Array.forEach代替
+    "@typescript-eslint/no-for-in-array":
+        - error
+
+    # ​2.5 [强制] 不要给已知的变量多余的声明类型
+    "@typescript-eslint/no-inferrable-types":
+        - error
+        -   ignoreParameters: true
+            ignoreProperties: true
+
+    # ​[关闭] 不允许数字常量，这个规则用来检测数字复用
+    no-magic-numbers:
+        - off
+
+    "@typescript-eslint/no-magic-numbers":
+        - off
+
+    # [强制] 禁止在interface里面使用constructor，也禁止在class里面使用new
+    "@typescript-eslint/no-misused-new":
+        - error
+
+    # [强制] 不能把promise当条件使用
+    "@typescript-eslint/no-misused-promises":
+        - error
+
+    # [强制] 不允许使用名称空间
+    "@typescript-eslint/no-namespace":
+        - error
+
+    # 2.2 （[强制] 不允许使用 non-null 声明
+    "@typescript-eslint/no-non-null-assertion":
+        - error
+
+    # 2.5 [强制] 不要使用 constructor 参数来声明属性
+    "@typescript-eslint/no-parameter-properties":
+        - error
+
+    # [强制] 不允许使用require
+    "@typescript-eslint/no-require-imports":
+        - error
+
+    # [强制] 不允许使用const self = this，豁免解构this的情况
+    "@typescript-eslint/no-this-alias":
+        - error
+        -   allowDestructuring: true
+
+    # [关闭] 不允许使用类型别名
+    "@typescript-eslint/no-type-alias":
+        - off
+
+    # [强制] 在命名空间中，直接使用内部变量，不需要添加命名空间前缀
+    "@typescript-eslint/no-unnecessary-qualifier":
+        - error
+
+    # [关闭] 如果泛型参数类型和默认类型一样，不要写类型
+    "@typescript-eslint/no-unnecessary-type-arguments":
+        - off
+
+    # [强制] 避免不必要的类型断言
+    "@typescript-eslint/no-unnecessary-type-assertion":
+        - error
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-unused-vars:
+        - off
+
+    "@typescript-eslint/no-unused-vars":
+        - error
+        -   vars: all
+            args: none
+            varsIgnorePattern: ^React$
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-use-before-define:
+        - off
+
+    "@typescript-eslint/no-use-before-define":
+        - error
+        - nofunc
+
+    # [强制] 覆盖JavaScript的同名规范
+    no-useless-constructor:
+        - off
+
+    "@typescript-eslint/no-useless-constructor":
+        - error
+
+    # [关闭] 禁止使用require的返回值，这个规则已经没用了，使用no-require-imports
+    "@typescript-eslint/no-var-requires":
+        - off
+
+    # [强制] 在能使用for-of时，尽量使用for-of
+    "@typescript-eslint/prefer-for-of":
+        - error
+
+    # [强制] 尽量使用type而非interface来声明函数类型
+    "@typescript-eslint/prefer-function-type":
+        - error
+
+    # [关闭] 尽量使用includes替代indexOf，兼容性太差了
+    "@typescript-eslint/prefer-includes":
+        - off
+
+    # [关闭] 推荐使用namespace，已经没有用了
+    "@typescript-eslint/prefer-namespace-keyword":
+        - off
+
+    # [建议] 推荐使用namespace，已经没有用了
+    "@typescript-eslint/prefer-readonly":
+        - warn
+
+    # [关闭] 推荐使用RegExp.exec替代String.match，用处不大
+    "@typescript-eslint/prefer-regexp-exec":
+        - off
+
+    # [关闭]前端代码倾向于使用Promise，async的编译效果不太好
+    "@typescript-eslint/promise-function-async":
+        - off
+
+    # [强制] 覆盖JavaScript的同名规范（TODO 基础库尚未发版）
+    #    quotes:
+    #        - off
+    #
+    #    "@typescript-eslint/quotes":
+    #        - 2
+    #        - single
+    #        -   allowTemplateLiterals: true
+
+    # [关闭]数组比较判断，看起来没什么用
+    "@typescript-eslint/require-array-sort-compare":
+        - off
+
+    # [关闭] Async方法一定要一个await，感觉很不自由
+    require-await:
+        - off
+
+    "@typescript-eslint/require-await":
+        - off
+
+    # 2.10 [建议] 使用加号时，两者必须同为数字或同为字符串
+    "@typescript-eslint/restrict-plus-operands":
+        - warn
+
+    # [强制] 覆盖JavaScript的同名规范
+    semi:
+        - off
+    "@typescript-eslint/semi":
+        - 2
+        - always
+
+    # [关闭] 不能用空字符串，数字0参与bool表达式
+    "@typescript-eslint/strict-boolean-expressions":
+        - off
+
+    # 2.8 [强制] 不要使用 reference
+    "@typescript-eslint/triple-slash-reference":
+        - error
+        -   path: never
+            types: never
+            lib: never
+
+    # 3.1 [强制] 类型声明需要加空格
+    "@typescript-eslint/type-annotation-spacing":
+        - error
+
+    # [强制] 部分情况下，强制类型声明
+    "@typescript-eslint/typedef":
+        - error
+        -   arrowParameter: false
+
+    # [强制] 类方法不能用来当函数使用
+    "@typescript-eslint/unbound-method":
+        - off
+
+    # ​2.10 [强制] 合并多个可以合并的函数重载
+    "@typescript-eslint/unified-signatures":
+        - error
+    # endregion TypeScript
+

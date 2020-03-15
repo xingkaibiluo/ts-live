@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es2018",
+        "module": "commonjs",
+        "declaration": true,
+        "strict": true,
+        "rootDir": ".",
+        "outDir": "./dist",
+        "declarationDir": "./types",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "preserveSymlinks": true,
+        "resolveJsonModule": true,
+        "removeComments": true,
+        "experimentalDecorators": true,
+        "sourceMap": false,
+        "downlevelIteration": true,
+        "baseUrl": "./packages",
+        "paths": {
+            "@bps/*": [
+                "./*/src"
+            ]
+        }
+    }
+}

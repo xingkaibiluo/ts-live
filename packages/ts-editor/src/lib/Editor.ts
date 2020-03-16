@@ -1,3 +1,4 @@
+import {monaco} from '../index';
 import {guid, throttle} from './utils';
 
 export type IEditorLanguage = 'typescript' | 'javascript';
@@ -26,7 +27,7 @@ export type IEditorOptions = IHooks & {
     editorOptions?: monaco.editor.IEditorConstructionOptions;
 };
 
-export default class Editor {
+export class Editor {
 
     private static jsTypes: string[] = [];
 
@@ -219,8 +220,6 @@ export default class Editor {
             func(exports, this.require);
 
             ret = Editor.getExports(exports);
-
-            codeDidRun && codeDidRun(null, ret, compiledCode);
         } catch (e) {
             err = e;
         } finally {

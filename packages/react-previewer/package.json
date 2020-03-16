@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "ts-editor": "^0.0.1"
   }
 }

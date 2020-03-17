@@ -29,11 +29,11 @@ export type IEditorOptions = IHooks & {
 
 export class Editor {
 
-    private static jsTypes: string[] = [];
+    protected static jsTypes: string[] = [];
 
-    private static tsTypes: string[] = [];
+    protected static tsTypes: string[] = [];
 
-    private static getExports(exports: any) {
+    protected static getExports(exports: any) {
         if (typeof exports === 'function') {
             return exports;
         }
@@ -41,35 +41,35 @@ export class Editor {
         return exports;
     }
 
-    private codeModel?: monaco.editor.ITextModel;
+    protected codeModel?: monaco.editor.ITextModel;
 
-    private codeEditor?: monaco.editor.IStandaloneCodeEditor;
+    protected codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
-    private compilerOptions: monaco.languages.typescript.CompilerOptions;
+    protected compilerOptions: monaco.languages.typescript.CompilerOptions;
 
-    private editorOptions: monaco.editor.IEditorConstructionOptions;
+    protected editorOptions: monaco.editor.IEditorConstructionOptions;
 
-    private readonly hooks: IHooks;
+    protected readonly hooks: IHooks;
 
-    private language: IEditorLanguage;
+    protected language: IEditorLanguage;
 
-    private compiledCode: string | undefined;
+    protected compiledCode: string | undefined;
 
-    private lastCompiledCode: string;
+    protected lastCompiledCode: string;
 
-    private code: string;
+    protected code: string;
 
-    private lastCode: string;
+    protected lastCode: string;
 
-    private domElement: HTMLElement;
+    protected domElement: HTMLElement;
 
-    private require: (mod: string) => any;
+    protected require: (mod: string) => any;
 
-    private delay = 100;
+    protected delay = 100;
 
-    private runable: boolean = true;
+    protected runable: boolean = true;
 
-    private inited: boolean = false;
+    protected inited: boolean = false;
 
     constructor(domElement: HTMLElement, options: IEditorOptions) {
 
@@ -162,7 +162,7 @@ export class Editor {
         return monaco.languages.typescript.getTypeScriptWorker();
     }
 
-    public getEditor(): monaco.editor.IStandaloneCodeEditor {
+    public get editor(): monaco.editor.IStandaloneCodeEditor {
 
         if (this.codeEditor == null) {
             throw new Error('call method init before');
@@ -171,7 +171,7 @@ export class Editor {
         return this.codeEditor;
     }
 
-    public getModel(): monaco.editor.ITextModel {
+    public get model(): monaco.editor.ITextModel {
 
         if (this.codeModel == null) {
             throw new Error('call method init before');
@@ -180,7 +180,7 @@ export class Editor {
         return this.codeModel;
     }
 
-    public setModel(model: monaco.editor.ITextModel) {
+    public set model(model: monaco.editor.ITextModel) {
 
         if (this.codeModel != null) {
             this.codeModel.dispose();
@@ -229,14 +229,14 @@ export class Editor {
 
     public resetCode() {
         if (this.inited) {
-            this.getModel().setValue(this.code);
+            this.model.setValue(this.code);
         }
     }
 
     public getCode(): string {
 
         if (this.inited) {
-            return this.getModel().getValue();
+            return this.model.getValue();
         } else {
             return this.code;
         }
@@ -244,17 +244,17 @@ export class Editor {
 
     public getCompiledCode(): string | undefined {
         if (this.inited) {
-            return this.getModel().getValue();
+            return this.model.getValue();
         } else {
             return this.compiledCode;
         }
     }
 
     public getMarkers(): monaco.editor.IMarker[] {
-        return monaco.editor.getModelMarkers({resource: this.getModel().uri});
+        return monaco.editor.getModelMarkers({resource: this.model.uri});
     }
 
-    private _init(compilable: boolean = true) {
+    protected _init(compilable: boolean = true) {
 
         if (this.inited) {
             return;
@@ -290,7 +290,7 @@ export class Editor {
         }
     }
 
-    private addTypes(types: Record<string, string>) {
+    protected addTypes(types: Record<string, string>) {
 
         const addedTypes = this.language === 'typescript' ? Editor.tsTypes : Editor.jsTypes;
 
@@ -303,11 +303,11 @@ export class Editor {
         });
     }
 
-    private editorDidCreate() {
+    protected editorDidCreate() {
         const {onCodeChange} = this.hooks;
 
         const handleThrottle = throttle((e) => {
-            const changedCode = this.getModel().uri.toString();
+            const changedCode = this.model.getValue();
 
             onCodeChange && onCodeChange(e, this.lastCode, changedCode);
 
@@ -316,12 +316,12 @@ export class Editor {
 
         }, this.delay);
 
-        this.getEditor().onDidChangeModelContent((e) => {
+        this.editor.onDidChangeModelContent((e) => {
             handleThrottle(e);
         });
     }
 
-    private compileCode(run: boolean = true): Promise<any> {
+    protected compileCode(runable: boolean = true): Promise<any> {
 
         const {codeWillCompile, codeDidCompile} = this.hooks;
         let flag: boolean = true;
@@ -335,10 +335,10 @@ export class Editor {
 
         return this.getWorkerProcess(this.language)
             .then((worker: any) => {
-                return worker(this.getModel().uri).then((client: any, a: any) => {
+                return worker(this.model.uri).then((client: any, a: any) => {
 
                     // compile code
-                    const filePath = this.getModel().uri.toString();
+                    const filePath = this.model.uri.toString();
 
                     return client.getSemanticDiagnostics(filePath)
                         .then((diagnostics: any) => { // 如果有语法错误，跳过执行
@@ -357,7 +357,7 @@ export class Editor {
 
                 codeDidCompile && codeDidCompile(null, this.lastCode, this.lastCompiledCode);
 
-                run && this.runCode(this.lastCompiledCode);
+                runable && this.runCode(this.lastCompiledCode);
 
                 return this.lastCompiledCode;
             }).catch(e => {
@@ -366,7 +366,7 @@ export class Editor {
             });
     }
 
-    private createFile(): monaco.Uri {
+    protected createFile(): monaco.Uri {
 
         const isJSX = this.compilerOptions.jsx !== monaco.languages.typescript.JsxEmit.None;
         const fileExt = this.language === 'typescript' ? 'ts' : 'js';

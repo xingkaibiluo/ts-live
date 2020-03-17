@@ -8,6 +8,16 @@ export type FunctionParams<T extends FunctionAny> = T extends (...args: infer R)
     : never;
 
 
+// 判断一个对象是否是一个函数
+export function isFunction(fun: unknown): fun is Function {
+    return typeof fun === 'function';
+}
+
+// 判断一个对象是否是一个函数
+export function isString(obj: unknown): obj is string {
+    return typeof obj === 'string';
+}
+
 /**
  * 生成4位随机数
  */
@@ -30,7 +40,7 @@ export function guid(): string {
  * @param fn 要节流的函数
  * @param delay 节流时间间隔
  */
-export function throttle<T extends FunctionAny>(fn: T, delay: number): (...args: FunctionParams<T>) => void {
+export function debounce<T extends FunctionAny>(fn: T, delay: number): (...args: FunctionParams<T>) => void {
 
     let timer: number | null = null;
     let remaining = 0;
@@ -42,19 +52,12 @@ export function throttle<T extends FunctionAny>(fn: T, delay: number): (...args:
 
         remaining = now - previous;
 
-        if (remaining >= delay) {
-
-            if (timer) {
-                window.clearTimeout(timer);
-            }
-
-            fn.apply(null, args);
-            previous = now;
-        } else if (!timer) {
-            timer = window.setTimeout(() => {
-                fn.apply(null, args);
-                previous = +new Date();
-            }, delay - remaining);
+        if (timer) {
+            window.clearTimeout(timer);
         }
+        timer = window.setTimeout(() => {
+            fn.apply(null, args);
+            previous = +new Date();
+        }, delay);
     };
 }

@@ -1,15 +1,15 @@
 import {monaco} from '../index';
-import {guid, throttle} from './utils';
+import {guid, debounce, isFunction} from './utils';
 
 export type IEditorLanguage = 'typescript' | 'javascript';
 
 interface IHooks {
     editorWillCreate?: (compilerOptions: monaco.languages.typescript.CompilerOptions) => void;
     editorDidCreate?: (codeEditor: monaco.editor.IStandaloneCodeEditor, codeModel: monaco.editor.ITextModel) => void;
-    onCodeChange?: (e: monaco.editor.IModelContentChangedEvent, before: string, after: string) => void;
-    codeWillCompile?: (code: string) => boolean;
+    onCodeChange?: (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => void;
+    codeWillCompile?: (code: string) => Promise<boolean>;
     codeDidCompile?: (err: Error | null, code: string, compiledCode: string) => void;
-    codeWillRun?: (code: string, compiledCode: string) => void;
+    codeWillRun?: (compiledCode: string) => Promise<boolean>;
     codeDidRun?: (err: Error | null, ret: any, compiledCode: string) => void;
 }
 
@@ -27,19 +27,12 @@ export type IEditorOptions = IHooks & {
     editorOptions?: monaco.editor.IEditorConstructionOptions;
 };
 
+
 export class Editor {
 
     protected static jsTypes: string[] = [];
 
     protected static tsTypes: string[] = [];
-
-    protected static getExports(exports: any) {
-        if (typeof exports === 'function') {
-            return exports;
-        }
-
-        return exports;
-    }
 
     protected codeModel?: monaco.editor.ITextModel;
 
@@ -53,13 +46,13 @@ export class Editor {
 
     protected language: IEditorLanguage;
 
-    protected compiledCode: string | undefined;
+    protected originalCompiledCode: string | undefined;
 
-    protected lastCompiledCode: string;
+    protected latestCompiledCode: string;
 
-    protected code: string;
+    protected originalCode: string;
 
-    protected lastCode: string;
+    protected latestCode: string;
 
     protected domElement: HTMLElement;
 
@@ -80,7 +73,7 @@ export class Editor {
             compilerOptions,
             editorOptions,
             compiledCode,
-            delay = 100,
+            delay = 300,
             delayInit = false,
             runable = true,
             types = {},
@@ -131,9 +124,9 @@ export class Editor {
         this.language = language;
         this.delay = delay;
         this.runable = runable;
-        this.code = this.lastCode = code;
-        this.compiledCode = compiledCode;
-        this.lastCompiledCode = compiledCode || '';
+        this.originalCode = this.latestCode = code;
+        this.originalCompiledCode = compiledCode;
+        this.latestCompiledCode = compiledCode || '';
         this.hooks = Object.assign({}, hooks);
 
         this.addTypes(types);
@@ -189,6 +182,18 @@ export class Editor {
         this.codeModel = model;
     }
 
+    public get code(): string {
+        return this.latestCode;
+    }
+
+    public get compiledCode(): string | undefined {
+        return this.latestCompiledCode;
+    }
+
+    public getMarkers(): monaco.editor.IMarker[] {
+        return monaco.editor.getModelMarkers({resource: this.model.uri});
+    }
+
     public init(compilable: boolean = true) {
         this._init(compilable);
     }
@@ -202,56 +207,44 @@ export class Editor {
         }
     }
 
-    public runCode(compiledCode: string) {
+    public async runCode(compiledCode: string) {
+        const {
+            codeWillRun,
+            codeDidRun
+        } = this.hooks;
+        let runable: boolean = this.runable;
+
+        if (runable && isFunction(codeWillRun)) {
+            runable = await codeWillRun(compiledCode)
+        }
 
         if (!this.runable) {
             return;
         }
 
-        const {codeDidRun} = this.hooks;
         const exports = {};
         let err: Error | null = null;
         let ret: any;
 
         try {
-
             const func = new Function('exports', 'require', compiledCode);
 
             func(exports, this.require);
 
-            ret = Editor.getExports(exports);
+            ret = exports;
         } catch (e) {
             err = e;
         } finally {
-            codeDidRun && codeDidRun(err, ret, compiledCode);
+            if (isFunction(codeDidRun)) {
+                codeDidRun(err, ret, compiledCode);
+            }
         }
     }
 
     public resetCode() {
         if (this.inited) {
-            this.model.setValue(this.code);
+            this.model.setValue(this.originalCode);
         }
-    }
-
-    public getCode(): string {
-
-        if (this.inited) {
-            return this.model.getValue();
-        } else {
-            return this.code;
-        }
-    }
-
-    public getCompiledCode(): string | undefined {
-        if (this.inited) {
-            return this.model.getValue();
-        } else {
-            return this.compiledCode;
-        }
-    }
-
-    public getMarkers(): monaco.editor.IMarker[] {
-        return monaco.editor.getModelMarkers({resource: this.model.uri});
     }
 
     protected _init(compilable: boolean = true) {
@@ -270,7 +263,7 @@ export class Editor {
 
         this.languageDefaults.setCompilerOptions(this.compilerOptions);
 
-        this.codeModel = monaco.editor.createModel(this.code, this.language, this.createFile());
+        this.codeModel = monaco.editor.createModel(this.latestCode, this.language, this.createFile());
         this.codeEditor = monaco.editor.create(
             this.domElement,
             Object.assign(
@@ -306,32 +299,48 @@ export class Editor {
     protected editorDidCreate() {
         const {onCodeChange} = this.hooks;
 
-        const handleThrottle = throttle((e) => {
+        const handleDebounce = debounce((e) => {
             const changedCode = this.model.getValue();
 
-            onCodeChange && onCodeChange(e, this.lastCode, changedCode);
+            if (isFunction(onCodeChange)) {
+                onCodeChange(e, this.latestCode, changedCode);
+            }
 
-            this.lastCode = changedCode;
+            this.latestCode = changedCode;
             this.compileCode();
 
         }, this.delay);
 
         this.editor.onDidChangeModelContent((e) => {
-            handleThrottle(e);
+            handleDebounce(e);
         });
     }
 
-    protected compileCode(runable: boolean = true): Promise<any> {
+    protected codeDidCompile(err: Error | null, code: string, compiledCode: string) {
+        const {
+            codeDidCompile
+        } = this.hooks;
 
-        const {codeWillCompile, codeDidCompile} = this.hooks;
-        let flag: boolean = true;
+        if (isFunction(codeDidCompile)) {
+            codeDidCompile(err, code, compiledCode);
+        }
+        if (!err) {
+            this.runCode(compiledCode);
+        }
+    }
 
-        if (codeWillCompile) {
-            flag = codeWillCompile(this.lastCode);
+    protected async compileCode() {
+
+        const {codeWillCompile} = this.hooks;
+        let compilable: boolean = true;
+
+        if (isFunction(codeWillCompile)) {
+            compilable = await codeWillCompile(this.latestCode);
         }
-        if (!flag) {
-            // return;
+        if (!compilable) {
+            return;
         }
+        let err: Error | null = null;
 
         return this.getWorkerProcess(this.language)
             .then((worker: any) => {
@@ -344,7 +353,7 @@ export class Editor {
                         .then((diagnostics: any) => { // 如果有语法错误，跳过执行
                             diagnostics.forEach((diagnostic: any) => {
                                 if (diagnostic.category === 1) { // 过滤 error，即 category=1
-                                    throw (diagnostics.messageText);
+                                    throw (diagnostic.messageText);
                                 }
                             });
                         }).then(() => {
@@ -353,16 +362,14 @@ export class Editor {
                         });
                 });
             }).then((result: any) => { // compile success
-                this.lastCompiledCode = result.outputFiles[0].text;
+                this.latestCompiledCode = result.outputFiles[0].text;
 
-                codeDidCompile && codeDidCompile(null, this.lastCode, this.lastCompiledCode);
-
-                runable && this.runCode(this.lastCompiledCode);
-
-                return this.lastCompiledCode;
-            }).catch(e => {
+                return this.latestCompiledCode;
+            }).catch((error: Error) => {
                 // compile error
-                codeDidCompile && codeDidCompile(e, this.lastCode, '');
+                err = error;
+            }).finally(() => {
+                this.codeDidCompile(err, this.latestCode, this.latestCompiledCode);
             });
     }
 

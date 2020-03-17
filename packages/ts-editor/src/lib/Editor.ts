@@ -7,9 +7,9 @@ interface IHooks {
     editorWillCreate?: (compilerOptions: monaco.languages.typescript.CompilerOptions) => void;
     editorDidCreate?: (codeEditor: monaco.editor.IStandaloneCodeEditor, codeModel: monaco.editor.ITextModel) => void;
     onCodeChange?: (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => void;
-    codeWillCompile?: (code: string) => Promise<boolean>;
+    codeWillCompile?: (code: string) => Promise<boolean | void> | boolean | void;
     codeDidCompile?: (err: Error | null, code: string, compiledCode: string) => void;
-    codeWillRun?: (compiledCode: string) => Promise<boolean>;
+    codeWillRun?: (compiledCode: string) => Promise<boolean | void> | boolean | void;
     codeDidRun?: (err: Error | null, ret: any, compiledCode: string) => void;
 }
 
@@ -21,11 +21,15 @@ export type IEditorOptions = IHooks & {
     delay?: number;
     runable?: boolean;
     types?: Record<string, string>;
-    require: (mod: string) => any;
+    scope?: IScope;
     language?: IEditorLanguage;
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
     editorOptions?: monaco.editor.IEditorConstructionOptions;
 };
+
+export interface IScope {
+    [name: string]: any;
+}
 
 
 export class Editor {
@@ -56,7 +60,7 @@ export class Editor {
 
     protected domElement: HTMLElement;
 
-    protected require: (mod: string) => any;
+    protected scope: IScope;
 
     protected delay = 100;
 
@@ -69,7 +73,7 @@ export class Editor {
         const {
             code = '',
             language = 'typescript',
-            require,
+            scope,
             compilerOptions,
             editorOptions,
             compiledCode,
@@ -81,7 +85,7 @@ export class Editor {
         } = options;
 
         this.domElement = domElement;
-        this.require = require;
+        this.scope = scope || {};
         this.compilerOptions = Object.assign({
 
             noImplicitAny: true,
@@ -215,10 +219,10 @@ export class Editor {
         let runable: boolean = this.runable;
 
         if (runable && isFunction(codeWillRun)) {
-            runable = await codeWillRun(compiledCode)
+            runable = (await codeWillRun(compiledCode)) !== false;
         }
 
-        if (!this.runable) {
+        if (this.runable === false) {
             return;
         }
 
@@ -229,7 +233,7 @@ export class Editor {
         try {
             const func = new Function('exports', 'require', compiledCode);
 
-            func(exports, this.require);
+            func(exports, this.requireMod.bind(this));
 
             ret = exports;
         } catch (e) {
@@ -335,9 +339,9 @@ export class Editor {
         let compilable: boolean = true;
 
         if (isFunction(codeWillCompile)) {
-            compilable = await codeWillCompile(this.latestCode);
+            compilable = (await codeWillCompile(this.latestCode)) !== false;
         }
-        if (!compilable) {
+        if (compilable === false) {
             return;
         }
         let err: Error | null = null;
@@ -381,5 +385,9 @@ export class Editor {
         const filepath = `input${guid()}.${ext}`;
 
         return monaco.Uri.file(filepath);
+    }
+
+    protected requireMod(moduleName: string) {
+        return this.scope[moduleName];
     }
 }

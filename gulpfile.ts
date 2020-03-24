@@ -13,6 +13,7 @@ import merge from 'merge2';
 import config from './tsconfig.json';
 // import babel from 'gulp-babel';
 const babel = require('gulp-babel');
+const clean = require('gulp-clean');
 
 function resolve(p: string): string {
     return path.resolve(process.cwd(), p);
@@ -82,11 +83,11 @@ gulp.task('build-js', () => {
 gulp.task('build-css', () => {
 
     const cssComponent = gulp
-        .src('packages/*/src/index.less', {base: 'packages'})
+        .src('packages/*/style/index.less', {base: 'packages'})
         .pipe(less())
         .pipe(minifyCss())
         .pipe(rename(p => p.extname = '.css'))
-        .pipe(gulp.dest('dist/js'));
+        .pipe(gulp.dest('dist/style'));
 
     return merge([
         cssComponent
@@ -94,7 +95,15 @@ gulp.task('build-css', () => {
 });
 
 
-gulp.task('del-dist', () => del(['dist']));
+gulp.task('clean', () => del(['dist']));
+gulp.task('clean', () => {
+    return gulp.src([
+        './dist',
+        // 删除编译后的文件
+        `./packages/*/dist`,
+        `./packages/*/style/*.css`
+    ]).pipe(clean({force: true}));
+});
 
 function createCopyTask(name: string): string[] {
     const dev: boolean = !!params.dev;
@@ -117,10 +126,15 @@ function createCopyTask(name: string): string[] {
 
     const copyJsonTask = `copy-json-${name}`;
     const copyJsTask = `copy-js-${name}`;
+    const copyCssTask = `copy-css-${name}`;
 
     // copy src 下所有非 ts 文件
     gulp.task(copyJsonTask, () => {
-        const result = gulp.src([`packages/${name}/src/**/**`, `!packages/${name}/src/**/*.ts`], {
+        const result = gulp.src([
+            `packages/${name}/src/**/**`,
+            `!packages/${name}/src/**/*.ts`,
+            `!packages/${name}/src/**/style/**`
+        ], {
             allowEmpty: true,
             dot: true
         });
@@ -145,7 +159,15 @@ function createCopyTask(name: string): string[] {
         return merge([js, other]);
     });
 
-    return [copyJsonTask, copyJsTask];
+    gulp.task(copyCssTask, () => {
+        const css = gulp
+            .src(['dist/style/' + name + '/style/**'])
+            .pipe(gulp.dest(p + '/' + name + '/style'));
+
+        return merge([css]);
+    });
+
+    return [copyJsonTask, copyJsTask, copyCssTask];
 }
 
 const tasks = glob.sync('packages/*').reduce((_tasks: string[], name) => {
@@ -158,7 +180,7 @@ const tasks = glob.sync('packages/*').reduce((_tasks: string[], name) => {
 }, []);
 
 gulp.task('default', gulp.series(
-    'del-dist',
+    'clean',
     'build-ts',
     'build-js',
     'build-css',

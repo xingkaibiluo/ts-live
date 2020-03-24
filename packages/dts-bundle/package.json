@@ -1,18 +1,12 @@
 {
-  "name": "dts-bundle",
+  "name": "@byte-design/dts-bundle",
   "version": "0.0.1",
   "description": "> TODO: description",
   "author": "dcx <duanchuanxu@bytedance.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "lib/dts-bundle.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "publishConfig": {
     "registry": "http://bnpm.byted.org/"
   },

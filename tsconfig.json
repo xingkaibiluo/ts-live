@@ -1,26 +1,27 @@
 {
     "compilerOptions": {
-        "target": "es2018",
+        "target": "es5",
         "module": "commonjs",
-        "declaration": true,
         "strict": true,
         "rootDir": ".",
-        "outDir": "./dist",
-        "declarationDir": "./types",
+        "jsx": "react",
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
+        "removeComments": true,
         "preserveSymlinks": true,
         "resolveJsonModule": true,
-        "removeComments": true,
         "experimentalDecorators": true,
-        "sourceMap": false,
-        "downlevelIteration": true,
         "baseUrl": "./packages",
         "paths": {
-            "@bps/*": [
+            "@byte-design/*": [
                 "./*/src"
             ]
-        }
-    }
+        },
+        "typeRoots": [
+            "./node_modules/@types",
+            "./types"
+        ]
+    },
+    "exclude": []
 }

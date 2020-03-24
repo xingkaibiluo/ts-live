@@ -21,15 +21,15 @@ export type IEditorOptions = IHooks & {
     delay?: number;
     runable?: boolean;
     types?: Record<string, string>;
-    scope?: IScope;
+    scope?: Scope;
     language?: IEditorLanguage;
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
     editorOptions?: monaco.editor.IEditorConstructionOptions;
 };
 
-export interface IScope {
+export type Scope = {
     [name: string]: any;
-}
+} | ((name: string) => any);
 
 
 export class Editor {
@@ -60,7 +60,7 @@ export class Editor {
 
     protected domElement: HTMLElement;
 
-    protected scope: IScope;
+    protected scope: Scope;
 
     protected delay = 100;
 
@@ -259,7 +259,7 @@ export class Editor {
 
         this.inited = true;
 
-        const {editorWillCreate, editorDidCreate} = this.hooks;
+        const {editorWillCreate} = this.hooks;
 
         if (editorWillCreate) {
             editorWillCreate(this.compilerOptions);
@@ -281,10 +281,6 @@ export class Editor {
         compilable && this.compileCode();
 
         this.editorDidCreate();
-
-        if (editorDidCreate) {
-            editorDidCreate(this.codeEditor, this.codeModel);
-        }
     }
 
     protected addTypes(types: Record<string, string>) {
@@ -301,7 +297,15 @@ export class Editor {
     }
 
     protected editorDidCreate() {
-        const {onCodeChange} = this.hooks;
+        const {
+            onCodeChange,
+            editorDidCreate
+        } = this.hooks;
+
+
+        if (isFunction(editorDidCreate) && this.codeEditor && this.codeModel) {
+            editorDidCreate(this.codeEditor, this.codeModel);
+        }
 
         const handleDebounce = debounce((e) => {
             const changedCode = this.model.getValue();
@@ -388,6 +392,10 @@ export class Editor {
     }
 
     protected requireMod(moduleName: string) {
+        if (isFunction(this.scope)) {
+            return this.scope(moduleName);
+        }
+
         return this.scope[moduleName];
     }
 }

@@ -8,6 +8,8 @@ import gulp from 'gulp';
 import ts from 'gulp-typescript';
 import merge from 'merge2';
 import config from './tsconfig.json';
+// import babel from 'gulp-babel';
+const babel = require('gulp-babel');
 
 function resolve(p: string): string {
     return path.resolve(process.cwd(), p);
@@ -15,6 +17,7 @@ function resolve(p: string): string {
 
 const files = [
     'packages/*/src/**/*.ts',
+    'packages/*/src/**/*.tsx',
     '!packages/**/__tests__/**'
 ];
 
@@ -23,9 +26,11 @@ const params = minimist(process.argv.slice(2));
 gulp.task('build-ts', () => {
 
     const realConfig = Object.assign({}, config.compilerOptions, {
+        module: 'esnext',
         target: 'es2018',
         rootDir: resolve('.'),
         outDir: resolve('dist/ts'),
+        declaration: true,
         declarationDir: resolve('dist/ts')
     });
 
@@ -33,8 +38,42 @@ gulp.task('build-ts', () => {
 
     return merge([
         result.js.pipe(gulp.dest('dist/ts')),
-        result.dts.pipe(gulp.dest('dist/ts'))
+        result.dts.pipe(gulp.dest('dist/js'))
     ]);
+});
+
+gulp.task('build-js', () => {
+
+    let stream = gulp
+        .src(['dist/ts/**'])
+        .pipe(babel({
+            presets: [
+                [
+                    '@babel/preset-env',
+                    {
+                        modules: 'commonjs',
+                        targets: {
+                            browsers: [
+                                '> 1%',
+                                'last 2 versions',
+                                'not ie <= 8'
+                            ]
+                        }
+                    }
+                ],
+                '@babel/preset-react'
+            ],
+            plugins: [
+                [
+                    '@babel/plugin-proposal-class-properties',
+                    {
+                        loose: false
+                    }
+                ]
+            ]
+        }));
+
+    return stream.pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('del-dist', () => del(['dist']));
@@ -73,7 +112,7 @@ function createCopyTask(name: string): string[] {
 
     gulp.task(copyJsTask, () => {
         const js = gulp
-            .src(['dist/ts/' + name + '/src/**'])
+            .src(['dist/js/' + name + '/src/**'])
             .pipe(gulp.dest(p + '/' + name + '/dist'));
 
 
@@ -103,6 +142,7 @@ const tasks = glob.sync('packages/*').reduce((_tasks: string[], name) => {
 gulp.task('default', gulp.series(
     'del-dist',
     'build-ts',
+    'build-js',
     ...tasks
 ));
 

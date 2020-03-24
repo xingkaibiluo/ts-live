@@ -1,18 +1,12 @@
 {
-  "name": "react-previewer",
+  "name": "@byte-design/react-previewer",
   "version": "0.0.1",
   "description": "> TODO: description",
   "author": "dcx <duanchuanxu@bytedance.com>",
   "homepage": "",
   "license": "ISC",
-  "main": "lib/react-previewer.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "publishConfig": {
     "registry": "http://bnpm.byted.org/"
   },
@@ -20,6 +14,10 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "ts-editor": "^0.0.1"
+    "@byte-design/ts-editor": "^0.0.1",
+    "@types/react": "^16.9.25",
+    "@types/react-dom": "^16.9.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

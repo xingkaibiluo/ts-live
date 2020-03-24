@@ -6,6 +6,9 @@ import del from 'del';
 import glob from 'glob';
 import gulp from 'gulp';
 import ts from 'gulp-typescript';
+import less from 'gulp-less';
+import minifyCss from 'gulp-minify-css';
+import rename from 'gulp-rename';
 import merge from 'merge2';
 import config from './tsconfig.json';
 // import babel from 'gulp-babel';
@@ -76,6 +79,21 @@ gulp.task('build-js', () => {
     return stream.pipe(gulp.dest('dist/js'));
 });
 
+gulp.task('build-css', () => {
+
+    const cssComponent = gulp
+        .src('packages/*/src/index.less', {base: 'packages'})
+        .pipe(less())
+        .pipe(minifyCss())
+        .pipe(rename(p => p.extname = '.css'))
+        .pipe(gulp.dest('dist/js'));
+
+    return merge([
+        cssComponent
+    ]);
+});
+
+
 gulp.task('del-dist', () => del(['dist']));
 
 function createCopyTask(name: string): string[] {
@@ -143,6 +161,7 @@ gulp.task('default', gulp.series(
     'del-dist',
     'build-ts',
     'build-js',
+    'build-css',
     ...tasks
 ));
 

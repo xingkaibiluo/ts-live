@@ -118,7 +118,8 @@ export class Editor {
             emitDecoratorMetadata: false,
 
             target: monaco.languages.typescript.ScriptTarget.ES2017,
-            jsx: monaco.languages.typescript.JsxEmit.None
+            jsx: monaco.languages.typescript.JsxEmit.None,
+            module: monaco.languages.typescript.ModuleKind.CommonJS
         }, compilerOptions);
         this.editorOptions = Object.assign({
             minimap: {enabled: false},

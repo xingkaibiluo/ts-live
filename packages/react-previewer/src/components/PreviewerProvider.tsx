@@ -4,17 +4,13 @@ import {
     IEditorOptions,
     monaco
 } from '@byte-design/ts-editor';
+import classnames from 'classnames';
+import {ProviderContext} from '../context/ProviderContext';
+import {IPreviewerProviderProps} from '../types';
 
-export interface IPreviewerProviderProps {
-
-}
 
 export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
-    const codeLive = useRef<Editor>();
-    const editorRef = useRef<HTMLDivElement>(null);
-    const previewRef = useRef<HTMLDivElement>(null);
-
-    const options: IEditorOptions = {
+    const defaultOptions: IEditorOptions = {
         code: 'let num = 111',
         types: {},
         delayInit: true,
@@ -46,27 +42,27 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         }
     };
 
-    useEffect(() => {
-        if (editorRef.current === null) {
-            return;
-        }
-        codeLive.current = new Editor(editorRef.current, options);
-        codeLive.current.init();
-    })
+    const {
+        children,
+        ...options
+    } = props;
+    const editorOptions = Object.assign(defaultOptions, options);
 
+    const context = {
+        editorRef: null,
+        previewerRef: null,
+        errorRef: null,
+        editor: null,
+        editorOptions
+    };
+
+    const cls = classnames('rp-provider');
 
     return (
-        <div className="App">
-            <header className="App-header">
-                <div className="button" onClick={() => {
-                    codeLive.current!.resetCode();
-                }}>
-                    click me
-          </div>
-                <div className="preview" ref={previewRef} />
-                <div className="editor" ref={editorRef} style={{width: '500px', height: '500px'}} />
-
-            </header>
-        </div>
+        <ProviderContext.Provider value={context}>
+            <div className={cls}>
+                {children}
+            </div>
+        </ProviderContext.Provider>
     );
 }

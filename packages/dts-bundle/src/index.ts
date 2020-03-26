@@ -130,6 +130,7 @@ export class DtsBundle {
         let content = '';
 
         const extractDependency = (dependency: string, dir: string) => {
+            console.log(chalk.blue(`extract dependency: ${dependency}`));
 
             const modulePath = this.getModulePath(dependency, dir);
 
@@ -217,8 +218,11 @@ export class DtsBundle {
             }
 
             references.forEach(reference => {
+                const referencePath = path.resolve(dir, reference);
+                console.log(chalk.blue(`extract reference: ${reference} ${referencePath}`));
+
                 queue.unshift({ // 如果是 reference 需要放到 queue 头部
-                    filePath: path.resolve(dir, reference),
+                    filePath: referencePath,
                     from: 'reference-path'
                 });
             });
@@ -267,6 +271,8 @@ export class DtsBundle {
         if (!modPath) {
             return '';
         }
+        console.log(chalk.blue(`get external module: ${name} ${modPath}`))
+
         return this.setType(modPath, name);
     }
 
@@ -281,6 +287,7 @@ export class DtsBundle {
             code,
             moduleName: mod
         };
+        console.log(chalk.blue(`extract type: ${mod}`))
 
         return code;
     }
@@ -311,23 +318,29 @@ export class DtsBundle {
         }
 
         let pkgPath = '';
+        let typesModuleName = moduleName;
         try {
             // 先尝试查找 node_modules/@types/moduleName
             pkgPath = require.resolve(this.joinPath('@types', moduleName, 'package.json'));
+            typesModuleName = `@types/${moduleName}`;
         } catch (error) {
             // 在查找 node_modules/moduleName
             pkgPath = require.resolve(this.joinPath(moduleName, 'package.json'));
         }
 
-        if (fs.existsSync(pkgPath)) {
-            const pkg = require(pkgPath);
-            const dstFile = pkg.types || pkg.typings || 'index.d.ts';
+        const pkg = require(pkgPath);
+        let dstFile = pkg.types || pkg.typings || 'index.d.ts';
+        if (!path.extname(dstFile)) {
+            dstFile += '.d.ts';
+        }
 
-            try {
-                modulePath = require.resolve(this.joinPath(moduleName, dstFile));
-            } catch (error) {
-                return '';
-            }
+        const joinedPath = this.joinPath(typesModuleName, dstFile);
+
+        try {
+            modulePath = require.resolve(joinedPath);
+        } catch (error) {
+            console.log(chalk.red(`can not find module ${joinedPath}`))
+            return '';
         }
 
         return modulePath;

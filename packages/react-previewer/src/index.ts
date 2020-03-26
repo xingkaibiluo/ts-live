@@ -19,3 +19,7 @@ export {
 export {
     IPreviewerProviderProps
 } from './types';
+
+export {
+    ITypes
+} from '@byte-design/ts-editor';

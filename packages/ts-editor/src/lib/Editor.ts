@@ -13,6 +13,7 @@ interface IHooks {
     codeDidRun?: (err: Error | null, ret: any, compiledCode: string) => void;
 }
 
+export type ITypes = Record<string, string>;
 
 export type IEditorOptions = IHooks & {
     code?: string;
@@ -20,7 +21,7 @@ export type IEditorOptions = IHooks & {
     delayInit?: boolean; // 是否延迟初始化
     delay?: number;
     runable?: boolean;
-    types?: Record<string, string>;
+    types?: ITypes;
     scope?: Scope;
     language?: IEditorLanguage;
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
@@ -284,7 +285,7 @@ export class Editor {
         this.editorDidCreate();
     }
 
-    protected addTypes(types: Record<string, string>) {
+    protected addTypes(types: ITypes) {
 
         const addedTypes = this.language === 'typescript' ? Editor.tsTypes : Editor.jsTypes;
 

@@ -1,6 +1,7 @@
 export {
     Editor,
-    IEditorOptions
+    IEditorOptions,
+    ITypes
 } from './lib/Editor';
 
 import * as monaco from 'monaco-editor';

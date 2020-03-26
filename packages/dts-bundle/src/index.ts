@@ -93,8 +93,12 @@ export class DtsBundle {
         if (this.debugOut) {
             let allTypes = '';
 
-            Object.values(this.types).forEach(types => {
-                allTypes += '\n' + types.code;
+            Object.entries(this.types).forEach(([modulePath, types]) => {
+                allTypes += `\n
+//@module_path ${modulePath}
+//@module_name ${types.moduleName}
+${types.code}
+                `;
             });
             this.writeFile(this.debugOut, allTypes);
         }

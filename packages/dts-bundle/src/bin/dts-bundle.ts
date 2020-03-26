@@ -38,15 +38,12 @@ function main() {
         configPath = path.resolve(cwd, config);
     }
 
-    console.log(`----config ${configPath}`, config)
-
     assert(fs.existsSync(configPath), `Cannot find config file '${configPath}'.`);
 
     const defaultOptions: Partial<IOptions> = {
         projectDir: cwd
     };
     const options: IOptions = Object.assign(defaultOptions, require(configPath));
-    console.log('----------options', options)
 
     assert(options.moduleName && options.entry && options.out && options.projectDir, `options moduleName、entry、out、projectDir must be present.`);
 

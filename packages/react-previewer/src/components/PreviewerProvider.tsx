@@ -1,17 +1,16 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useMemo} from 'react';
 import {
-    Editor,
     IEditorOptions,
     monaco
 } from '@byte-design/ts-editor';
 import classnames from 'classnames';
 import {ProviderContext} from '../context/ProviderContext';
-import {IPreviewerProviderProps} from '../types';
+import {mergeOptions} from '../utils';
+import {IPreviewerProviderProps, IContext} from '../types';
 
 
 export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
     const defaultOptions: IEditorOptions = {
-        code: 'let num = 111',
         types: {},
         delayInit: true,
         compiledCode: '',
@@ -26,19 +25,6 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         },
         scope: {
             react: React
-        },
-        codeWillCompile: (code: string) => {
-        },
-        codeDidRun: (err, ret, compiledCode) => {
-            console.log('-----------run result', err, ret)
-            // const Preview = exports.default;
-            // ReactDOM.render(<Preview />, previewRef.current);
-        },
-        onCodeChange: (e: any, lastCode: string, lateset: string) => {
-            console.log('-----------onCodeChange', lastCode, lateset)
-        },
-        codeDidCompile: (err: Error | null, code: string, compiledCode: string) => {
-            console.log('-----------codeDidCompile', code, err)
         }
     };
 
@@ -46,15 +32,25 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         children,
         ...options
     } = props;
-    const editorOptions = Object.assign(defaultOptions, options);
+    const tsEditorOptions = useRef<IEditorOptions>();
 
-    const context = {
+    if (!tsEditorOptions.current) {
+        console.log('-----------update ref')
+        tsEditorOptions.current = mergeOptions(defaultOptions, options, ['editorOptions', 'compilerOptions', 'scope']);
+    }
+
+    const context: IContext = {
         editorRef: null,
         previewerRef: null,
         errorRef: null,
         editor: null,
-        editorOptions
+        editorOptions: tsEditorOptions.current
     };
+
+
+    useEffect(() => {
+        console.log('-----------PreviewerProvider effect')
+    });
 
     const cls = classnames('rp-provider');
 

@@ -19,12 +19,20 @@ export interface IContext {
 
     editor: Editor | null;
 
-    editorOptions?: IEditorOptions;
+    editorOptions: IEditorOptions;
 }
 
 
 export interface IPreviewerEditorProps {
     width: string;
     height: string;
+    className?: string;
+}
+
+export interface IPreviewerErrorProps {
+    className?: string;
+}
+
+export interface IPreviewerProps {
     className?: string;
 }

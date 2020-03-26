@@ -5,5 +5,6 @@ export const ProviderContext = React.createContext<IContext>({
     editorRef: null,
     previewerRef: null,
     errorRef: null,
-    editor: null
+    editor: null,
+    editorOptions: {}
 });

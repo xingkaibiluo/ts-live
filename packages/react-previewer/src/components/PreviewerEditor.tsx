@@ -22,6 +22,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
     const editorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        console.log('-----------PreviewerEditor effect')
         context.editorRef = editorRef.current;
 
         const {
@@ -33,7 +34,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         }
         codeLive.current = new Editor(context.editorRef, editorOptions);
         codeLive.current.init();
-    });
+    }, []);
 
     const cls = classnames(className, 'rp-editor');
 

@@ -10,17 +10,19 @@ import './App.css';
 import '@byte-design/react-previewer/style/index.css'
 
 
-function App() {
+function App(): JSX.Element {
+  const code = `
+let num: number = 123;
+export default function Demo(){
+    return (
+      <div>hello world</div>
+    )
+}
+  `;
 
   return (
     <PreviewerProvider
-      code={`
-let num: number = 123;
-export default function Demo(){
-    return '1234'
-}
-      `}
-    >
+      code={code}>
       <Previewer />
       <PreviewerEditor width="500px" height="300px" />
       <PreviewerError />

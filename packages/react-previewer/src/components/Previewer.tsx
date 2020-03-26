@@ -13,7 +13,6 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     } = props;
     const context = useContext(ProviderContext);
     const previewerRef = useRef<HTMLDivElement>(null);
-    const [Element, setElement] = useState('');
 
     useMemo(() => {
         const {
@@ -24,10 +23,7 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
         context.editorOptions.codeDidRun = (err: Error | null, ret: any, compiledCode: string) => {
             if (!err) {
                 const Preview = ret.default;
-                setElement(Preview)
-                // ReactDOM.render(<Preview />, previewerRef.current, () =>{
-
-                // });
+                ReactDOM.render(<Preview />, previewerRef.current);
             }
 
             if (codeDidRun) {
@@ -37,13 +33,9 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     }, []);
 
     const cls = classnames(className, 'rp-previewer');
-    const Elements = errorBoundary(Element, (err: Error) => {
-        console.log('----------render error', err)
-    });
 
     return (
         <div className={cls}>
-            <Elements />
             <div ref={previewerRef}>
 
             </div>

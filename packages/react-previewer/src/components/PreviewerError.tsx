@@ -44,7 +44,6 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
         <div className={cls}>
             <pre>
                 {error && error.message}
-                {error && error.stack}
             </pre>
         </div>
     );

@@ -6,7 +6,6 @@ import {
   PreviewerEditor,
   PreviewerError
 } from '@byte-design/react-previewer';
-import logo from './logo.svg';
 import './App.css';
 import '@byte-design/react-previewer/style/index.css'
 

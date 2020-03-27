@@ -1,3 +1,7 @@
+import {
+    monaco,
+    Editor
+} from '@byte-design/ts-editor';
 
 export {
     PreviewerProvider
@@ -23,3 +27,13 @@ export {
 export {
     ITypes
 } from '@byte-design/ts-editor';
+
+export type ThemeData = monaco.editor.IStandaloneThemeData;
+
+export function defineTheme(themeName: string, themeData: ThemeData): void {
+    Editor.defineTheme(themeName, themeData);
+}
+
+export function setTheme(themeName: string): void {
+    Editor.setTheme(themeName);
+}

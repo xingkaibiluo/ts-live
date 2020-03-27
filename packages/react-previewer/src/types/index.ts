@@ -23,7 +23,6 @@ export interface IContext {
     editorOptions: IEditorOptions;
 }
 
-
 export interface IPreviewerEditorProps {
     width: string;
     height: string;

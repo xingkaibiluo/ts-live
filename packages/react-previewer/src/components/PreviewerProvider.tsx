@@ -48,7 +48,6 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         editorOptions: tsEditorOptions.current
     };
 
-
     useEffect(() => {
         console.log('-----------PreviewerProvider effect')
     });

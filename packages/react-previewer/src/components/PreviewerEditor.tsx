@@ -65,6 +65,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         if (context.editorRef === null) {
             return;
         }
+
         const {
             editorDidCreate,
             onCodeChange
@@ -87,6 +88,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
 
         editor.current = new Editor(context.editorRef, editorOptions);
         // editor.current.init();
+
     }, []);
 
     const cls = classnames(className, 'rp-editor');

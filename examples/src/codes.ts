@@ -23,48 +23,33 @@ export default function Demo(){
 }
     `,
     components: `
-import React, { useState } from 'react';
-import { RadioGroup, Tabs, TabSize } from '@byte-design/ui';
+import {Switch} from '@byte-design/ui';
+import React, { useState, useCallback, Fragment } from 'react';
 
-export default function Demo(): JSX.Element {
-    const [size, setSize] = useState<TabSize>('md')
-
-    const handleChange = (id: string): void => {
-        console.log('click tab:' + id);
-    };
+export default function RadioDemo() {
+    const [checked, setChecked]  = useState(true);
+    const handleChange=useCallback((v: boolean) => {
+        setChecked(v);
+    }, []);
 
     return (
-        <div>
-            <RadioGroup
-                type="button"
-                value={size}
-                onChange={(value) => {
-                    value && setSize(value);
-                }}
-            >
-                <RadioGroup.Button value="lg">lg</RadioGroup.Button>
-                <RadioGroup.Button value="md">md</RadioGroup.Button>
-                <RadioGroup.Button value="sm">sm</RadioGroup.Button>
-            </RadioGroup>
-
-            <Tabs
-                type="line"
-                onChange={handleChange}
-                size={size}
-                activeId="1"
-            >
-                <Tabs.Item tab="tab 1" id="1" >
-                    tab 1
-                </Tabs.Item>
-                <Tabs.Item tab="tab 2" id="2">
-                    tab 2
-                </Tabs.Item>
-                <Tabs.Item tab="tab 3" id="3">
-                    tab 3
-                </Tabs.Item>
-            </Tabs>
-        </div>
+        <Fragment>
+            <Switch
+                style={{marginRight: '20px'}}
+                size="lg"
+                checked={checked}
+                onValueChange={handleChange}/>
+            <Switch
+                style={{marginRight: '20px'}}
+                size="md"
+                checked={checked}
+                onValueChange={handleChange}/>
+            <Switch
+                size="sm"
+                checked={checked}
+                onValueChange={handleChange}/>
+        </Fragment>
     );
-}
+};
     `
 }

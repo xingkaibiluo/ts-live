@@ -25,7 +25,7 @@ export type IEditorOptions = IHooks & {
     scope?: Scope;
     language?: IEditorLanguage;
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
-    editorOptions?: monaco.editor.IEditorConstructionOptions;
+    editorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
 };
 
 export type Scope = {
@@ -45,7 +45,7 @@ export class Editor {
 
     protected compilerOptions: monaco.languages.typescript.CompilerOptions;
 
-    protected editorOptions: monaco.editor.IEditorConstructionOptions;
+    protected editorOptions: monaco.editor.IStandaloneEditorConstructionOptions;
 
     protected readonly hooks: IHooks;
 
@@ -142,6 +142,14 @@ export class Editor {
         }
 
         !delayInit && this._init(true);
+    }
+
+    public static defineTheme(themeName: string, themeData: monaco.editor.IStandaloneThemeData): void {
+        monaco.editor.defineTheme(themeName, themeData);
+    }
+
+    public static setTheme(themeName: string): void {
+        monaco.editor.setTheme(themeName);
     }
 
     public get languageDefaults(): monaco.languages.typescript.LanguageServiceDefaults {

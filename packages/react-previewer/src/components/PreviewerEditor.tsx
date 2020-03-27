@@ -1,8 +1,7 @@
-import React, {useContext, useRef, useEffect} from 'react';
+import React, {useContext, useRef, useEffect, useCallback} from 'react';
 import classnames from 'classnames';
 import {
     Editor,
-    IEditorOptions,
     monaco
 } from '@byte-design/ts-editor';
 import {ProviderContext} from '../context/ProviderContext';
@@ -26,6 +25,7 @@ const autoHeightCreator = (callback?: (height: string) => void) => {
 
                 callback && callback(`${height}px`);
             }
+
             lastLineCount = lineCount;
 
             return (lc: number) => {
@@ -39,7 +39,7 @@ const autoHeightCreator = (callback?: (height: string) => void) => {
 export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
     const {
         width,
-        height,
+        height = '0px',
         className,
         autoHeight = false
     } = props;
@@ -49,9 +49,9 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
     const editorRef = useRef<HTMLDivElement>(null);
 
     const [editorHeight, setEditorHeight] = useState<string>(height);
-    const autoHeightHandle = autoHeightCreator(height => {
+    const autoHeightHandle = useCallback(autoHeightCreator(height => {
         setEditorHeight(height);
-    });
+    }), []);
 
 
     useEffect(() => {
@@ -71,18 +71,20 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
             onCodeChange
         } = editorOptions;
 
-        editorOptions.editorDidCreate = (codeEditor: monaco.editor.IStandaloneCodeEditor, codeModel: monaco.editor.ITextModel) => {
-            autoHeightHandle(editor.current);
+        if (autoHeight) {
+            editorOptions.editorDidCreate = (codeEditor, codeModel) => {
+                autoHeightHandle(editor.current);
 
-            if (editorDidCreate) {
-                editorDidCreate(codeEditor, codeModel);
-            }
-        };
-        editorOptions.onCodeChange = (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => {
-            autoHeightHandle(editor.current);
+                if (editorDidCreate) {
+                    editorDidCreate(codeEditor, codeModel);
+                }
+            };
+            editorOptions.onCodeChange = (e, lastCode: string, latestCode: string) => {
+                autoHeightHandle(editor.current);
 
-            if (onCodeChange) {
-                onCodeChange(e, lastCode, latestCode);
+                if (onCodeChange) {
+                    onCodeChange(e, lastCode, latestCode);
+                }
             }
         }
 

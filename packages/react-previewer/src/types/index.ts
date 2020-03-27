@@ -30,7 +30,7 @@ export interface IContext {
 
 export interface IPreviewerEditorProps {
     width: string;
-    height: string;
+    height?: string;
     autoHeight?: boolean;
     className?: string;
 }

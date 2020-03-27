@@ -261,7 +261,7 @@ export class Editor {
         }
     }
 
-    protected _init(compilable: boolean = true) {
+    protected async _init(compilable: boolean = true) {
 
         if (this.inited) {
             return;
@@ -288,9 +288,14 @@ export class Editor {
             )
         );
 
-        compilable && this.compileCode();
+        if (compilable) {
+            this.compileCode();
+        }
 
-        this.editorDidCreate();
+        // 待 Editor 实例化完成后再触发 editorDidCreate 
+        setTimeout(() => {
+            this.editorDidCreate();
+        }, 0);
     }
 
     protected addTypes(types: ITypes) {

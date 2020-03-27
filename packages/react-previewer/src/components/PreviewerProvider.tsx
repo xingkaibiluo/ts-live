@@ -12,7 +12,7 @@ import {IPreviewerProviderProps, IContext} from '../types';
 export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
     const defaultOptions: IEditorOptions = {
         types: {},
-        delayInit: true,
+        delayInit: false,
         compiledCode: '',
         compilerOptions: {
             target: monaco.languages.typescript.ScriptTarget.ES2015,

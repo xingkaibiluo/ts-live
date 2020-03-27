@@ -27,11 +27,14 @@ export interface IContext {
 export interface IPreviewerEditorProps {
     width: string;
     height: string;
+    autoHeight?: boolean;
     className?: string;
 }
 
 export interface IPreviewerErrorProps {
     className?: string;
+    onError?: (error: Error | null) => void;
+    children?: ReactNode;
 }
 
 export interface IPreviewerProps {

@@ -1,33 +1,46 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import ReactDOM from 'react-dom';
 import {
-  PreviewerProvider,
-  Previewer,
-  PreviewerEditor,
-  PreviewerError
+    PreviewerProvider,
+    Previewer,
+    PreviewerEditor,
+    PreviewerError,
+    ITypes
 } from '@byte-design/react-previewer';
+import '@byte-design/react-previewer/style/index.css';
+import typesData from './typings/types.json';
+import codes from './codes';
 import './App.css';
-import '@byte-design/react-previewer/style/index.css'
 
+const types: ITypes = {};
+for (const type of typesData) {
+    types[type.moduleName] = type.code;
+}
 
 function App(): JSX.Element {
-  const code = `
-let num: number = 123;
-export default function Demo(){
-    return (
-      <div>hello world</div>
-    )
-}
-  `;
 
-  return (
-    <PreviewerProvider
-      code={code}>
-      <Previewer />
-      <PreviewerEditor width="500px" height="300px" />
-      <PreviewerError />
-    </PreviewerProvider>
-  );
+    return (
+        <div className="demos-contailer">
+            <PreviewerProvider
+                code={codes.simple}
+                types={types}
+                className="demo"
+            >
+                <Previewer />
+                <PreviewerEditor width="500px" height="400px" />
+                <PreviewerError />
+            </PreviewerProvider>
+
+            <PreviewerProvider
+                code={codes.simple}
+                types={types}
+                className="demo"
+            >
+                <Previewer />
+                <PreviewerEditor autoHeight width="500px" height="400px" />
+                <PreviewerError />
+            </PreviewerProvider>
+        </div>
+    );
 }
 
 export default App;

@@ -21,6 +21,7 @@ export type IEditorOptions = IHooks & {
     delayInit?: boolean; // 是否延迟初始化
     delay?: number;
     runable?: boolean;
+    compilable?: boolean;
     types?: ITypes;
     scope?: Scope;
     language?: IEditorLanguage;
@@ -67,6 +68,8 @@ export class Editor {
 
     protected runable: boolean = true;
 
+    protected compilable: boolean = true;
+
     protected inited: boolean = false;
 
     constructor(domElement: HTMLElement, options: IEditorOptions) {
@@ -81,6 +84,7 @@ export class Editor {
             delay = 200,
             delayInit = false,
             runable = true,
+            compilable = true,
             types = {},
             ...hooks
         } = options;
@@ -130,6 +134,7 @@ export class Editor {
         this.language = language;
         this.delay = delay;
         this.runable = runable;
+        this.compilable = compilable;
         this.originalCode = this.latestCode = code;
         this.originalCompiledCode = compiledCode;
         this.latestCompiledCode = compiledCode || '';
@@ -141,7 +146,7 @@ export class Editor {
             this.runCode(compiledCode);
         }
 
-        !delayInit && this._init(true);
+        !delayInit && this._init();
     }
 
     public static defineTheme(themeName: string, themeData: monaco.editor.IStandaloneThemeData): void {
@@ -208,8 +213,8 @@ export class Editor {
         return monaco.editor.getModelMarkers({resource: this.model.uri});
     }
 
-    public init(compilable: boolean = true) {
-        this._init(compilable);
+    public init() {
+        this._init();
     }
 
     public dispose() {
@@ -261,7 +266,7 @@ export class Editor {
         }
     }
 
-    protected async _init(compilable: boolean = true) {
+    protected async _init() {
 
         if (this.inited) {
             return;
@@ -288,7 +293,7 @@ export class Editor {
             )
         );
 
-        if (compilable) {
+        if (this.compilable) {
             this.compileCode();
         }
 
@@ -355,7 +360,7 @@ export class Editor {
     protected async compileCode() {
 
         const {codeWillCompile} = this.hooks;
-        let compilable: boolean = true;
+        let compilable: boolean = this.compilable;
 
         if (isFunction(codeWillCompile)) {
             compilable = (await codeWillCompile(this.latestCode)) !== false;

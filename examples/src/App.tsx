@@ -7,7 +7,9 @@ import {
     ITypes
 } from '@byte-design/react-previewer';
 import '@byte-design/react-previewer/style/index.css';
-import typesData from './typings/types.json';
+import * as components from '@byte-design/ui';
+import '@byte-design/ui/themes/platform/index.css';
+import typesData from './dts/types.json';
 import codes from './codes';
 import './App.css';
 
@@ -31,9 +33,12 @@ function App(): JSX.Element {
             </PreviewerProvider>
 
             <PreviewerProvider
-                code={codes.simple}
+                code={codes.components}
                 types={types}
                 className="demo"
+                scope={{
+                    "@byte-design/ui": components
+                }}
             >
                 <Previewer />
                 <PreviewerEditor autoHeight width="500px" height="400px" />

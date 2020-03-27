@@ -10,7 +10,7 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
         className
     } = props;
     const context = useContext(ProviderContext);
-    const [error, setError] = useState<Error>();
+    const [error, setError] = useState<Error | null>();
 
     useMemo(() => {
         const {
@@ -20,18 +20,14 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
 
         console.log('-----------PreviewerError useMemo')
         context.editorOptions.codeDidCompile = (err: Error | null, code: string, compiledCode: string) => {
-            if (err) {
-                setError(err);
-            }
+            setError(err);
             if (codeDidCompile) {
                 codeDidCompile(err, code, compiledCode);
             }
         };
 
         context.editorOptions.codeDidRun = (err: Error | null, ret: any, compiledCode: string) => {
-            if (err) {
-                setError(err);
-            }
+            setError(err);
             if (codeDidRun) {
                 codeDidRun(err, ret, compiledCode);
             }

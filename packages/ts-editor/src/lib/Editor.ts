@@ -363,7 +363,9 @@ export class Editor {
                         .then((diagnostics: any) => { // 如果有语法错误，跳过执行
                             diagnostics.forEach((diagnostic: any) => {
                                 if (diagnostic.category === 1) { // 过滤 error，即 category=1
-                                    throw new Error(diagnostic.messageText);
+                                    const messageText = typeof diagnostic.messageText === 'string' ? diagnostic.messageText : diagnostic.messageText.messageText;
+
+                                    throw new Error(messageText);
                                 }
                             });
                         }).then(() => {

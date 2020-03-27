@@ -8,6 +8,7 @@ import {ReactNode} from 'react';
 
 export interface IPreviewerProviderProps extends IEditorOptions {
     children: ReactNode;
+    className?: string;
 }
 
 export interface IContext {

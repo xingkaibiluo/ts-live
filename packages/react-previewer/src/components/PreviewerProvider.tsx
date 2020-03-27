@@ -30,6 +30,7 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
 
     const {
         children,
+        className,
         ...options
     } = props;
     const tsEditorOptions = useRef<IEditorOptions>();
@@ -52,7 +53,7 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         console.log('-----------PreviewerProvider effect')
     });
 
-    const cls = classnames('rp-provider');
+    const cls = classnames(className, 'rp-provider');
 
     return (
         <ProviderContext.Provider value={context}>

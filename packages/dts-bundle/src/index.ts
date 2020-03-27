@@ -325,11 +325,11 @@ ${types.code}
         let typesModuleName = moduleName;
         try {
             // 先尝试查找 node_modules/@types/moduleName
-            pkgPath = require.resolve(this.joinPath('@types', moduleName, 'package.json'));
+            pkgPath = this.resolvePath('@types', moduleName, 'package.json');
             typesModuleName = `@types/${moduleName}`;
         } catch (error) {
             // 在查找 node_modules/moduleName
-            pkgPath = require.resolve(this.joinPath(moduleName, 'package.json'));
+            pkgPath = this.resolvePath(moduleName, 'package.json');
         }
 
         const pkg = require(pkgPath);
@@ -341,13 +341,21 @@ ${types.code}
         const joinedPath = this.joinPath(typesModuleName, dstFile);
 
         try {
-            modulePath = require.resolve(joinedPath);
+            modulePath = this.resolvePath(joinedPath);
         } catch (error) {
             console.log(chalk.red(`can not find module ${joinedPath}`))
             return '';
         }
 
         return modulePath;
+    }
+
+    private resolvePath(...paths: string[]): string {
+        const joinedPath = this.joinPath(...paths);
+
+        return require.resolve(joinedPath, {
+            paths: [process.cwd()]
+        });
     }
 
     private joinPath(...paths: string[]): string {

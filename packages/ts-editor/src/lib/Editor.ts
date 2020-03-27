@@ -141,7 +141,7 @@ export class Editor {
             this.runCode(compiledCode);
         }
 
-        !delayInit && this._init(!!compiledCode);
+        !delayInit && this._init(true);
     }
 
     public get languageDefaults(): monaco.languages.typescript.LanguageServiceDefaults {

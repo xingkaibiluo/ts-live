@@ -404,10 +404,14 @@ export class Editor {
     }
 
     protected requireMod(moduleName: string) {
+        let mod: any;
+
         if (isFunction(this.scope)) {
-            return this.scope(moduleName);
+            mod = this.scope(moduleName);
+        } else {
+            mod = this.scope[moduleName];
         }
 
-        return this.scope[moduleName];
+        return mod;
     }
 }

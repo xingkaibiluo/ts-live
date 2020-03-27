@@ -5,6 +5,11 @@ import {
 } from '@byte-design/ts-editor';
 import {ReactNode} from 'react';
 
+export type ThemeData = monaco.editor.IStandaloneThemeData;
+
+export interface IPlainObject {
+    [key: string]: any;
+}
 
 export interface IPreviewerProviderProps extends IEditorOptions {
     children: ReactNode;

@@ -35,6 +35,9 @@ function App(): JSX.Element {
                 code={codes.simple}
                 types={types}
                 className="demo"
+                scope={{
+                    "@byte-design/ui": components
+                }}
             >
                 <Previewer />
                 <PreviewerEditor width="500px" height="400px" />

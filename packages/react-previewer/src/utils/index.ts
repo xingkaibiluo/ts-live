@@ -1,5 +1,16 @@
-export interface IPlainObject {
-    [key: string]: any;
+import {Editor} from '@byte-design/ts-editor';
+import {
+    ThemeData,
+    IPlainObject
+} from '../types';
+
+
+export function defineTheme(themeName: string, themeData: ThemeData): void {
+    Editor.defineTheme(themeName, themeData);
+}
+
+export function setTheme(themeName: string): void {
+    Editor.setTheme(themeName);
 }
 
 export function mergeOptions(target: IPlainObject, source: IPlainObject, keys: string[]): IPlainObject {

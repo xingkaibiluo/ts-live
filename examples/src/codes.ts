@@ -1,26 +1,24 @@
 export default {
     simple: `
-import React, {useMemo, useState, useContext} from 'react';
+import {InputNumber} from '@byte-design/ui';
+import React, {useState} from 'react';
 
-export default function Demo(){
-    const [counter, setCounter] = useState<number>(0);
-
+export default () => {
+    const [value, setValue] = useState(1);
+    const handleChange = (val: number) => {
+        return setValue(val);
+    };
     return (
-        <div>
-        <button 
-            onClick={()=>{
-            setCounter(counter+1);
-            }}
-            style={{
-            padding: 10
-            }}
-        >
-            add
-        </button>
-        <div>{counter}</div>
-        </div>
-    )
-}
+        <InputNumber
+            onChange={handleChange}
+            placeholder="请输入1-20之间的数字"
+            max={20}
+            min={1}
+            strict={true}
+            value={value}
+        />
+    );
+};
     `,
     components: `
 import {Switch} from '@byte-design/ui';

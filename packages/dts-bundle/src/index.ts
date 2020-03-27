@@ -42,27 +42,27 @@ interface ITask {
 
 export class DtsBundle {
 
-    private types: ITypes = {};
+    protected types: ITypes = {};
 
-    private entry: string;
+    protected entry: string;
 
-    private projectDir: string;
+    protected projectDir: string;
 
-    private out: string;
+    protected out: string;
 
-    private debugOut?: string;
+    protected debugOut?: string;
 
-    private moduleName: string;
+    protected moduleName: string;
 
-    private extraModules: string[];
+    protected extraModules: string[];
 
-    private extraReferences: string[];
+    protected extraReferences: string[];
 
-    private injectExtraFlag = false; // 是否已经注入的标志
+    protected injectExtraFlag = false; // 是否已经注入的标志
 
-    private customParseExternal?: (moduleName: string) => string | boolean;
+    protected customParseExternal?: (moduleName: string) => string | boolean;
 
-    private externalVisited: string[] = []; // 记录已处理过的外部依赖，解决循环依赖
+    protected externalVisited: string[] = []; // 记录已处理过的外部依赖，解决循环依赖
 
     constructor(options: IOptions) {
         const {
@@ -106,7 +106,7 @@ ${types.code}
         this.writeFile(this.out, JSON.stringify(Object.values(this.types)));
     }
 
-    private getReferencePaths(input: string) {
+    protected getReferencePaths(input: string) {
         const rx = /<reference path="([^"]+)"\s\/>/;
 
         return (input.match(new RegExp(rx.source, 'g')) || []).map(s => {
@@ -119,7 +119,7 @@ ${types.code}
         });
     }
 
-    private getTypeDependencies(baseFile: string, baseMod: string): string {
+    protected getTypeDependencies(baseFile: string, baseMod: string): string {
 
         if (this.types[baseFile]) {
             return this.types[baseFile].code;
@@ -240,7 +240,7 @@ ${types.code}
         // return `declare module "${baseMod}" { ${content} }`;
     }
 
-    private getRelativeModule(fromFile: string, toFile: string, baseMod: string) {
+    protected getRelativeModule(fromFile: string, toFile: string, baseMod: string) {
         const fromDir = path.dirname(fromFile);
         const toDir = path.dirname(toFile) + path.sep + path.basename(toFile).replace(/\.d\.ts$/, '');
         const relativePath = path.relative(fromDir, toDir).replace(/\/?index$/, '');
@@ -248,7 +248,7 @@ ${types.code}
         return `${baseMod}${relativePath && '/'}${relativePath.replace(/\.\./g, '--')}`;
     }
 
-    private getModulePath(file: string, dir: string): string {
+    protected getModulePath(file: string, dir: string): string {
 
         if (!file.startsWith('.')) { // external module
             return file;
@@ -270,7 +270,7 @@ ${types.code}
         return file;
     }
 
-    private getExternalModule(name: string): string { // get external module types
+    protected getExternalModule(name: string): string { // get external module types
         const modPath = this.parseExternal(name);
         if (!modPath) {
             return '';
@@ -280,7 +280,7 @@ ${types.code}
         return this.setType(modPath, name);
     }
 
-    private setType(modPath: string, mod: string): string {
+    protected setType(modPath: string, mod: string): string {
         if (this.types[modPath]) {
             return this.types[modPath].code;
         }
@@ -296,7 +296,7 @@ ${types.code}
         return code;
     }
 
-    private writeFile(filePath: string, content: string) {
+    protected writeFile(filePath: string, content: string) {
         const dir = path.dirname(filePath);
 
         if (!fs.existsSync(dir)) {
@@ -306,7 +306,7 @@ ${types.code}
         fs.writeFileSync(filePath, content, 'utf8');
     }
 
-    private parseExternal(moduleName: string): string {
+    protected parseExternal(moduleName: string): string {
         // moduleName = this.mapModuleNameToModule(moduleName);
 
         let modulePath = '';
@@ -350,15 +350,15 @@ ${types.code}
         return modulePath;
     }
 
-    private resolvePath(...paths: string[]): string {
+    protected resolvePath(...paths: string[]): string {
         const joinedPath = this.joinPath(...paths);
 
         return require.resolve(joinedPath, {
-            paths: [process.cwd()]
+            paths: [this.projectDir]
         });
     }
 
-    private joinPath(...paths: string[]): string {
+    protected joinPath(...paths: string[]): string {
         const sep = path.sep;
         let joinedPath = paths.shift() as string;
 
@@ -369,7 +369,7 @@ ${types.code}
         return joinedPath;
     }
 
-    private mapModuleNameToModule(name: string): string {
+    protected mapModuleNameToModule(name: string): string {
         // in node repl:
         // > require("module").builtinModules
         const builtInNodeMods = [

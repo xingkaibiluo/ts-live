@@ -1,8 +1,20 @@
 .demos-contailer {
-  padding: 20px;
+    margin: 30px 50px;
 }
 
+.flex-demo-main {
+    display: flex;
+}
+.flex-demo-main .rp-editor {
+    flex: none;
+}
+.flex-demo-main .rp-previewer {
+    flex: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-.demo {
-  margin: 30px;
+.rp-error {
+    color: red;
 }

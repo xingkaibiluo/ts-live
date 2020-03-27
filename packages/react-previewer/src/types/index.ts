@@ -35,6 +35,10 @@ export interface IPreviewerEditorProps {
     width: string;
     height?: string;
     autoHeight?: boolean;
+    // autoHeight 为 true 时，编辑器最小高度
+    minHeight?: number;
+    // autoHeight 为 true 时，编辑器最大高度，为 0 时表示不限制高度
+    maxHeight?: number;
     className?: string;
 }
 

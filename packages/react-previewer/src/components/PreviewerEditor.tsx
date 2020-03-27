@@ -10,7 +10,7 @@ import {
 } from '../types';
 import {useState} from 'react';
 
-const autoHeightCreator = (callback?: (height: string) => void) => {
+const autoHeightCreator = (callback?: (height: number) => void) => {
     let lastLineCount = 0;
 
     return (editor?: Editor) => {
@@ -23,7 +23,7 @@ const autoHeightCreator = (callback?: (height: string) => void) => {
             if (lineCount !== lastLineCount) {
                 const height = lineCount * lineHeight + 20;
 
-                callback && callback(`${height}px`);
+                callback && callback(height);
             }
 
             lastLineCount = lineCount;
@@ -41,7 +41,9 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         width,
         height = '0px',
         className,
-        autoHeight = false
+        autoHeight = false,
+        minHeight = 0,
+        maxHeight = 0
     } = props;
     const context = useContext(ProviderContext);
 
@@ -50,7 +52,13 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
 
     const [editorHeight, setEditorHeight] = useState<string>(height);
     const autoHeightHandle = useCallback(autoHeightCreator(height => {
-        setEditorHeight(height);
+        if (height < minHeight) {
+            height = minHeight;
+        }
+        if (maxHeight > 0 && height > maxHeight) {
+            height = maxHeight;
+        }
+        setEditorHeight(`${height}px`);
     }), []);
 
 

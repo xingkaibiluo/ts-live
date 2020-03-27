@@ -67,7 +67,11 @@ function App(): JSX.Element {
                 >
                     <div className="flex-demo-main">
                         <Previewer />
-                        <PreviewerEditor autoHeight width="600px" />
+                        <PreviewerEditor
+                            width="600px"
+                            autoHeight
+                            minHeight={300}
+                        />
                     </div>
                     <PreviewerError />
                 </PreviewerProvider>

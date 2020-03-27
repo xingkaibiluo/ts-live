@@ -59,7 +59,8 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         context.editorRef = editorRef.current;
 
         const {
-            editorOptions = {}
+            editorOptions = {},
+            getEditor
         } = context;
 
         if (context.editorRef === null) {
@@ -72,11 +73,11 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         } = editorOptions;
 
         if (autoHeight) {
-            editorOptions.editorDidCreate = (codeEditor, codeModel) => {
-                autoHeightHandle(editor.current);
+            editorOptions.editorDidCreate = (editor) => {
+                autoHeightHandle(editor);
 
                 if (editorDidCreate) {
-                    editorDidCreate(codeEditor, codeModel);
+                    editorDidCreate(editor);
                 }
             };
             editorOptions.onCodeChange = (e, lastCode: string, latestCode: string) => {
@@ -89,6 +90,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         }
 
         editor.current = new Editor(context.editorRef, editorOptions);
+        getEditor && getEditor(editor.current);
         // editor.current.init();
 
     }, []);

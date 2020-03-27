@@ -5,7 +5,7 @@ export type IEditorLanguage = 'typescript' | 'javascript';
 
 interface IHooks {
     editorWillCreate?: (compilerOptions: monaco.languages.typescript.CompilerOptions) => void;
-    editorDidCreate?: (codeEditor: monaco.editor.IStandaloneCodeEditor, codeModel: monaco.editor.ITextModel) => void;
+    editorDidCreate?: (editor: Editor) => void;
     onCodeChange?: (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => void;
     codeWillCompile?: (code: string) => Promise<boolean | void> | boolean | void;
     codeDidCompile?: (err: Error | null, code: string, compiledCode: string) => void;
@@ -78,7 +78,7 @@ export class Editor {
             compilerOptions,
             editorOptions,
             compiledCode,
-            delay = 300,
+            delay = 200,
             delayInit = false,
             runable = true,
             types = {},
@@ -319,7 +319,7 @@ export class Editor {
 
 
         if (isFunction(editorDidCreate) && this.codeEditor && this.codeModel) {
-            editorDidCreate(this.codeEditor, this.codeModel);
+            editorDidCreate(this);
         }
 
         const handleDebounce = debounce((e) => {

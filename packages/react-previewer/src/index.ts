@@ -22,7 +22,8 @@ export {
 } from './types';
 
 export {
-    ITypes
+    ITypes,
+    Editor
 } from '@byte-design/ts-editor';
 
 export {

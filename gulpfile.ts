@@ -2,7 +2,6 @@ import path from 'path';
 import minimist from 'minimist';
 import isPathCwd from 'is-path-cwd';
 import isPathInCwd from 'is-path-in-cwd';
-import del from 'del';
 import glob from 'glob';
 import gulp from 'gulp';
 import ts from 'gulp-typescript';
@@ -95,10 +94,9 @@ gulp.task('build-css', () => {
 });
 
 
-gulp.task('clean', () => del(['dist']));
 gulp.task('clean', () => {
     return gulp.src([
-        './dist',
+        './dist/*',
         // 删除编译后的文件
         `./packages/*/dist`,
         `./packages/*/style/*.css`

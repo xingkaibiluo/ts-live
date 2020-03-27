@@ -5,9 +5,11 @@ import {
     IPreviewerErrorProps
 } from '../types';
 
-export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
+export function PreviewerError(props: IPreviewerErrorProps): JSX.Element | null {
     const {
-        className
+        className,
+        onError,
+        children
     } = props;
     const context = useContext(ProviderContext);
     const [error, setError] = useState<Error | null>();
@@ -17,17 +19,23 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
             codeDidCompile,
             codeDidRun
         } = context.editorOptions;
+        const emitError = (err: Error | null) => {
+            setError(err);
+            if (err && onError) {
+                onError(err);
+            }
+        };
 
         console.log('-----------PreviewerError useMemo')
         context.editorOptions.codeDidCompile = (err: Error | null, code: string, compiledCode: string) => {
-            setError(err);
+            emitError(err);
             if (codeDidCompile) {
                 codeDidCompile(err, code, compiledCode);
             }
         };
 
         context.editorOptions.codeDidRun = (err: Error | null, ret: any, compiledCode: string) => {
-            setError(err);
+            emitError(err);
             if (codeDidRun) {
                 codeDidRun(err, ret, compiledCode);
             }
@@ -36,11 +44,21 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element {
 
     const cls = classnames(className, 'rp-error');
 
+    if (!error) {
+        return null;
+    }
+
     return (
         <div className={cls}>
-            <pre>
-                {error && error.message}
-            </pre>
+            {
+                !children &&
+                <pre>
+                    {error.message}
+                </pre>
+            }
+            {
+                children && children
+            }
         </div>
     );
 }

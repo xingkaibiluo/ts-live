@@ -36,13 +36,13 @@ export type Scope = {
 
 export class Editor {
 
+    private _monacoModel?: monaco.editor.ITextModel;
+
+    private _monacoEditor?: monaco.editor.IStandaloneCodeEditor;
+
     protected static jsTypes: string[] = [];
 
     protected static tsTypes: string[] = [];
-
-    protected codeModel?: monaco.editor.ITextModel;
-
-    protected codeEditor?: monaco.editor.IStandaloneCodeEditor;
 
     protected compilerOptions: monaco.languages.typescript.CompilerOptions;
 
@@ -174,31 +174,31 @@ export class Editor {
         return monaco.languages.typescript.getTypeScriptWorker();
     }
 
-    public get editor(): monaco.editor.IStandaloneCodeEditor {
+    public get monacoEditor(): monaco.editor.IStandaloneCodeEditor {
 
-        if (this.codeEditor == null) {
+        if (this._monacoEditor == null) {
             throw new Error('call method init before');
         }
 
-        return this.codeEditor;
+        return this._monacoEditor;
     }
 
-    public get model(): monaco.editor.ITextModel {
+    public get monacoModel(): monaco.editor.ITextModel {
 
-        if (this.codeModel == null) {
+        if (this._monacoModel == null) {
             throw new Error('call method init before');
         }
 
-        return this.codeModel;
+        return this._monacoModel;
     }
 
-    public set model(model: monaco.editor.ITextModel) {
+    public set monacoModel(model: monaco.editor.ITextModel) {
 
-        if (this.codeModel != null) {
-            this.codeModel.dispose();
+        if (this._monacoModel != null) {
+            this._monacoModel.dispose();
         }
 
-        this.codeModel = model;
+        this._monacoModel = model;
     }
 
     public get code(): string {
@@ -210,7 +210,7 @@ export class Editor {
     }
 
     public getMarkers(): monaco.editor.IMarker[] {
-        return monaco.editor.getModelMarkers({resource: this.model.uri});
+        return monaco.editor.getModelMarkers({resource: this.monacoModel.uri});
     }
 
     public init() {
@@ -220,8 +220,8 @@ export class Editor {
     public dispose() {
 
         if (this.inited) {
-            this.codeModel && this.codeModel.dispose();
-            this.codeEditor && this.codeEditor.dispose();
+            this.monacoModel.dispose();
+            this.monacoEditor.dispose();
             this.inited = false;
         }
     }
@@ -262,7 +262,7 @@ export class Editor {
 
     public resetCode() {
         if (this.inited) {
-            this.model.setValue(this.originalCode);
+            this.monacoModel.setValue(this.originalCode);
         }
     }
 
@@ -282,12 +282,12 @@ export class Editor {
 
         this.languageDefaults.setCompilerOptions(this.compilerOptions);
 
-        this.codeModel = monaco.editor.createModel(this.latestCode, this.language, this.createFile());
-        this.codeEditor = monaco.editor.create(
+        this._monacoModel = monaco.editor.createModel(this.latestCode, this.language, this.createFile());
+        this._monacoEditor = monaco.editor.create(
             this.domElement,
             Object.assign(
                 {
-                    model: this.codeModel
+                    model: this._monacoModel
                 },
                 this.editorOptions
             )
@@ -323,12 +323,12 @@ export class Editor {
         } = this.hooks;
 
 
-        if (isFunction(editorDidCreate) && this.codeEditor && this.codeModel) {
+        if (isFunction(editorDidCreate)) {
             editorDidCreate(this);
         }
 
         const handleDebounce = debounce((e) => {
-            const changedCode = this.model.getValue();
+            const changedCode = this.monacoModel.getValue();
 
             if (isFunction(onCodeChange)) {
                 onCodeChange(e, this.latestCode, changedCode);
@@ -339,7 +339,7 @@ export class Editor {
 
         }, this.delay);
 
-        this.editor.onDidChangeModelContent((e) => {
+        this.monacoEditor.onDidChangeModelContent((e) => {
             handleDebounce(e);
         });
     }
@@ -372,10 +372,10 @@ export class Editor {
 
         return this.getWorkerProcess(this.language)
             .then((worker: any) => {
-                return worker(this.model.uri).then((client: any, a: any) => {
+                return worker(this.monacoModel.uri).then((client: any, a: any) => {
 
                     // compile code
-                    const filePath = this.model.uri.toString();
+                    const filePath = this.monacoModel.uri.toString();
 
                     return client.getSemanticDiagnostics(filePath)
                         .then((diagnostics: any) => { // 如果有语法错误，跳过执行
@@ -387,7 +387,7 @@ export class Editor {
                                 }
                             });
                         }).then(() => {
-                            // 只能通过codeModel.uri.toString()获取，否则初始化时报错
+                            // 只能通过_monacoModel.uri.toString()获取，否则初始化时报错
                             return client.getEmitOutput(filePath);
                         });
                 });

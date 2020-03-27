@@ -13,12 +13,12 @@ import {useState} from 'react';
 const autoHeightCreator = (callback?: (height: string) => void) => {
     let lastLineCount = 0;
 
-    return (codeLive?: Editor) => {
-        if (codeLive) {
-            const editor = codeLive.editor;
-            const model = codeLive.model;
-            const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
-            const lineCount = model.getLineCount();
+    return (editor?: Editor) => {
+        if (editor) {
+            const monacoEditor = editor.monacoEditor;
+            const monacoModel = editor.monacoModel;
+            const lineHeight = monacoEditor.getOption(monaco.editor.EditorOption.lineHeight);
+            const lineCount = monacoModel.getLineCount();
 
             if (lineCount !== lastLineCount) {
                 const height = lineCount * lineHeight + 20;

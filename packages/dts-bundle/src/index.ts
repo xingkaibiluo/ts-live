@@ -134,7 +134,7 @@ ${types.code}
         let content = '';
 
         const extractDependency = (dependency: string, dir: string) => {
-            console.log(chalk.blue(`extract dependency: ${dependency}`));
+            console.log(chalk.green(`extract dependency: ${dependency}`));
 
             const modulePath = this.getModulePath(dependency, dir);
 
@@ -223,7 +223,7 @@ ${types.code}
 
             references.forEach(reference => {
                 const referencePath = path.resolve(dir, reference);
-                console.log(chalk.blue(`extract reference: ${reference} ${referencePath}`));
+                console.log(chalk.green(`extract reference: ${reference} ${referencePath}`));
 
                 queue.unshift({ // 如果是 reference 需要放到 queue 头部
                     filePath: referencePath,
@@ -275,7 +275,7 @@ ${types.code}
         if (!modPath) {
             return '';
         }
-        console.log(chalk.blue(`get external module: ${name} ${modPath}`))
+        console.log(chalk.green(`get external module: ${name} ${modPath}`))
 
         return this.setType(modPath, name);
     }
@@ -291,7 +291,7 @@ ${types.code}
             code,
             moduleName: mod
         };
-        console.log(chalk.blue(`extract type: ${mod}`))
+        console.log(chalk.green(`extract type: ${mod}`))
 
         return code;
     }

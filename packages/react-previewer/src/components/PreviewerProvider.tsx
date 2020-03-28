@@ -31,7 +31,6 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
     const {
         children,
         className,
-        getEditor,
         ...options
     } = props;
     const tsEditorOptions = useRef<IEditorOptions>();
@@ -46,7 +45,6 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         previewerRef: null,
         errorRef: null,
         editor: null,
-        getEditor,
         editorOptions: tsEditorOptions.current
     };
 

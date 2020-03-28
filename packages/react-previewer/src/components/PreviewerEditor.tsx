@@ -43,7 +43,8 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         className,
         autoHeight = false,
         minHeight = 0,
-        maxHeight = 0
+        maxHeight = 0,
+        getEditor
     } = props;
     const context = useContext(ProviderContext);
 
@@ -67,8 +68,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         context.editorRef = editorRef.current;
 
         const {
-            editorOptions = {},
-            getEditor
+            editorOptions = {}
         } = context;
 
         if (context.editorRef === null) {

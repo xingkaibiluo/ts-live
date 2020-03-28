@@ -86,9 +86,6 @@ function App(): JSX.Element {
                         "@byte-design/ui": components
                     }}
                     delayInit
-                    getEditor={(editor) => {
-                        delayEditorInstance = editor;
-                    }}
                 >
                     <Previewer />
                     <div className="edittor-toggle" onClick={() => {
@@ -97,7 +94,14 @@ function App(): JSX.Element {
                     }}>
                         > 代码编辑器
                     </div>
-                    <PreviewerEditor className={hideEditorCls} autoHeight width="600px" />
+                    <PreviewerEditor
+                        className={hideEditorCls}
+                        autoHeight
+                        width="600px"
+                        getEditor={(editor) => {
+                            delayEditorInstance = editor;
+                        }}
+                    />
                     <PreviewerError />
                 </PreviewerProvider>
             </Demo>

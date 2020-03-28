@@ -13,7 +13,6 @@ export interface IPlainObject {
 
 export interface IPreviewerProviderProps extends IEditorOptions {
     children: ReactNode;
-    getEditor?: (editor: Editor) => void;
     className?: string;
 }
 
@@ -25,8 +24,6 @@ export interface IContext {
     errorRef: HTMLElement | null;
 
     editor: Editor | null;
-
-    getEditor?: (editor: Editor) => void;
 
     editorOptions: IEditorOptions;
 }
@@ -40,6 +37,7 @@ export interface IPreviewerEditorProps {
     // autoHeight 为 true 时，编辑器最大高度，为 0 时表示不限制高度
     maxHeight?: number;
     className?: string;
+    getEditor?: (editor: Editor) => void;
 }
 
 export interface IPreviewerErrorProps {

@@ -9,6 +9,27 @@
   <meta name="description" content="Web site created using create-react-app" />
 
   <title>Previewer Demo</title>
+  <script>
+
+    window.MonacoEnvironment = {
+      getWorkerUrl: function (moduleId, label) {
+        if (label === "json") {
+          return "./worker/json.worker.js";
+        }
+        if (label === "css") {
+          return "./worker/css.worker.js";
+        }
+        if (label === "html") {
+          return "./worker/html.worker.js";
+        }
+        if (label === "typescript" || label === "javascript") {
+          return "./worker/ts.worker.js";
+        }
+        return "./worker/editor.worker.js";
+      }
+    };
+
+  </script>
 </head>
 
 <body>

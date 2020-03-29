@@ -10,7 +10,7 @@ export default function Demo(){
             <div className="demo-counter">{counter}</div>
             <button 
                 onClick={()=>{
-                setCounter(counter+1);
+                    setCounter(counter+1);
                 }}
                 className="demo-button"
             >

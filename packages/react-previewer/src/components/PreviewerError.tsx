@@ -53,7 +53,7 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element | null 
             {
                 !children &&
                 <pre>
-                    {error.message}
+                    {error.toString()}
                 </pre>
             }
             {

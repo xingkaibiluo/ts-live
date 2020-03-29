@@ -1,14 +1,35 @@
-import React, {Component} from 'react';
+import React, {Component, ErrorInfo} from 'react';
 
-export const errorBoundary = (Element: any, errorCallback: any) => {
+export interface IState {
+    hasError: boolean;
+}
+
+export interface IProps {
+
+}
+
+export const errorBoundary = (Element: any, errorCallback: (error: Error, errorInfo: ErrorInfo) => void) => {
     return class ErrorBoundary extends Component {
-        componentDidCatch(error: Error) {
-            console.log('----------componentDidCatch', error);
-            errorCallback(error);
+        state: IState;
+
+        constructor(props: IProps) {
+            super(props);
+            this.state = {hasError: false};
+        }
+
+        static getDerivedStateFromError(error: Error) {
+            // 更新 state 使下一次渲染能够显示降级后的 UI
+            return {hasError: true};
+        }
+
+        componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+            errorCallback(error, errorInfo);
         }
 
         render() {
-            console.log('----------element', Element);
+            if (this.state.hasError) {
+                return null;
+            }
             return typeof Element === 'function' ? <Element /> : Element;
         }
     };

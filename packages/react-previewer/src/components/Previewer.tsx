@@ -22,7 +22,11 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
         console.log('-----------Previewer useMemo')
         context.editorOptions.codeDidRun = (err: Error | null, ret: any, compiledCode: string) => {
             if (!err) {
-                const Preview = ret.default;
+                const Preview = errorBoundary(ret.default, (err, errorInfo) => {
+                    console.log('----------render error', err, errorInfo);
+                    codeDidRun && codeDidRun(err, ret, compiledCode);
+                });
+
                 ReactDOM.render(<Preview />, previewerRef.current);
             }
 
@@ -36,9 +40,7 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
 
     return (
         <div className={cls}>
-            <div ref={previewerRef}>
-
-            </div>
+            <div ref={previewerRef}></div>
         </div>
     );
 }

@@ -2,19 +2,23 @@
   "name": "@byte-design/dts-bundle",
   "version": "0.0.1",
   "description": "Export TypeScript .d.ts files as an external module definition",
-  "author": "dcx <duanchuanxu@bytedance.com>",
+  "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
   "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "keywords": [
+    "typescript",
+    "definition",
+    "bundle",
+    "export",
+    "d.ts"
+  ],
   "publishConfig": {
     "registry": "http://bnpm.byted.org/"
   },
   "bin": {
     "dts-bundle": "dist/bin/dts-bundle.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "@types/commander": "^2.12.2",

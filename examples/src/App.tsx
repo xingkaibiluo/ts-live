@@ -127,12 +127,6 @@ function App(): JSX.Element {
                 </PreviewerProvider>
             </Demo>
 
-            <Demo title="delayInit demo">
-            </Demo>
-
-            <Demo title="computedCode demo">
-            </Demo>
-
         </div>
     );
 }

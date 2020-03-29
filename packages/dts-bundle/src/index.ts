@@ -16,14 +16,22 @@ const es6Exp = /(import|export)((?!from)(?!require)(?!;)(.|\n))*?(from|require\(
 const commentsExp = /(\/\*(.*?)\*\/)|((?:^|\s)\/\/(.+?)$)/gms;
 
 export interface IOptions {
-    moduleName: string; // entry 对应的 module
+    // entry 对应的 module
+    moduleName: string;
+    // .d.ts 入口文件
     entry: string;
+    // 项目地址，需要时绝对路径，如果是相对路径，会相对 process.cwd 来转为绝对路径
     projectDir: string;
+    // 生成的类型文件地址
     out: string;
+    // 指定生成的 ts 文件路径，方便查看调试
     debugOut?: string;
+    // 其他的 modules 会一起合并到最终生成的类型文件里
     extraModules?: string[];
+    // 其他的 reference 会一起合并到最终生成的类型文件里
     extraReferences?: string[];
-    parseExternal?: (moduleName: string) => string | boolean; // 返回 false 跳过该 module，否则返回 module 的 .d.ts 绝对路径
+    // 解析外部依赖模块的路径，返回 false 跳过该 module，否则返回 module 的 .d.ts 绝对路径
+    parseExternal?: (moduleName: string) => string | boolean;
 }
 
 export interface IType {
@@ -62,7 +70,7 @@ export class DtsBundle {
 
     protected customParseExternal?: (moduleName: string) => string | boolean;
 
-    protected externalVisited: string[] = []; // 记录已处理过的外部依赖，解决循环依赖
+    protected externalVisited: string[] = []; // 记录已处理过的外部依赖，避免循环依赖
 
     constructor(options: IOptions) {
         const {
@@ -76,7 +84,7 @@ export class DtsBundle {
             extraReferences = []
         } = options;
 
-        this.projectDir = projectDir;
+        this.projectDir = path.isAbsolute(projectDir) ? projectDir : path.resolve(process.cwd(), projectDir);
         this.entry = path.resolve(this.projectDir, entry);
         this.out = out;
         this.moduleName = moduleName;
@@ -129,7 +137,7 @@ ${types.code}
             filePath: baseFile,
             from: 'root'
         }];
-        const visited: string[] = []; // 记录已处理过的文件，解决循环依赖
+        const visited: string[] = []; // 记录已处理过的文件，避免循环依赖
         const baseDir = path.dirname(baseFile);
         let content = '';
 

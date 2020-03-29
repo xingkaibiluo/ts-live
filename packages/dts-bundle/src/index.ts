@@ -359,11 +359,10 @@ ${types.code}
     }
 
     protected joinPath(...paths: string[]): string {
-        const sep = path.sep;
         let joinedPath = paths.shift() as string;
 
         for (const p of paths) {
-            joinedPath = `${joinedPath}${sep}${p}`;
+            joinedPath = `${joinedPath}/${p}`;
         }
 
         return joinedPath;

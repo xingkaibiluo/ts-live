@@ -3,14 +3,24 @@ import {guid, debounce, isFunction} from './utils';
 
 export type IEditorLanguage = 'typescript' | 'javascript';
 
+export type EditorWillCreateCallback = (compilerOptions: monaco.languages.typescript.CompilerOptions) => void;
+export type EditorDidCreateCallback = (editor: Editor) => void;
+export type OnCodeChangeCallback = (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => void;
+export type CodeWillCompileCallback = (code: string) => Promise<boolean | void> | boolean | void;
+export type CodeDidCompileCallback = (code: string, compiledCode: string) => void;
+export type CodeWillRunCallback = (compiledCode: string) => Promise<boolean | void> | boolean | void;
+export type CodeDidRunCallback = (ret: any, compiledCode: string) => void;
+export type OnErrorCallback = (err: Error) => void;
+
 interface IHooks {
-    editorWillCreate?: (compilerOptions: monaco.languages.typescript.CompilerOptions) => void;
-    editorDidCreate?: (editor: Editor) => void;
-    onCodeChange?: (e: monaco.editor.IModelContentChangedEvent, lastCode: string, latestCode: string) => void;
-    codeWillCompile?: (code: string) => Promise<boolean | void> | boolean | void;
-    codeDidCompile?: (err: Error | null, code: string, compiledCode: string) => void;
-    codeWillRun?: (compiledCode: string) => Promise<boolean | void> | boolean | void;
-    codeDidRun?: (err: Error | null, ret: any, compiledCode: string) => void;
+    editorWillCreate?: EditorWillCreateCallback;
+    editorDidCreate?: EditorDidCreateCallback;
+    onCodeChange?: OnCodeChangeCallback;
+    codeWillCompile?: CodeWillCompileCallback;
+    codeDidCompile?: CodeDidCompileCallback;
+    codeWillRun?: CodeWillRunCallback;
+    codeDidRun?: CodeDidRunCallback;
+    onError?: OnErrorCallback;
 }
 
 export type ITypes = Record<string, string>;
@@ -229,7 +239,8 @@ export class Editor {
     public async runCode(compiledCode: string) {
         const {
             codeWillRun,
-            codeDidRun
+            codeDidRun,
+            onError
         } = this.hooks;
         let runable: boolean = this.runable;
 
@@ -254,8 +265,10 @@ export class Editor {
         } catch (e) {
             err = e;
         } finally {
-            if (isFunction(codeDidRun)) {
-                codeDidRun(err, ret, compiledCode);
+            if (err) {
+                isFunction(onError) && onError(err);
+            } else {
+                isFunction(codeDidRun) && codeDidRun(ret, compiledCode);
             }
         }
     }
@@ -346,14 +359,16 @@ export class Editor {
 
     protected codeDidCompile(err: Error | null, code: string, compiledCode: string) {
         const {
-            codeDidCompile
+            codeDidCompile,
+            onError
         } = this.hooks;
 
-        if (isFunction(codeDidCompile)) {
-            codeDidCompile(err, code, compiledCode);
-        }
+
         if (!err) {
+            isFunction(codeDidCompile) && codeDidCompile(code, compiledCode);
             this.runCode(compiledCode);
+        } else {
+            isFunction(onError) && onError(err);
         }
     }
 

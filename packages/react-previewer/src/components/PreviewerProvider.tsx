@@ -45,7 +45,10 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
         previewerRef: null,
         errorRef: null,
         editor: null,
-        editorOptions: tsEditorOptions.current
+        editorOptions: tsEditorOptions.current,
+        codeDidCompileCallbacks: [],
+        codeDidRunCallbacks: [],
+        onErrorCallbacks: [],
     };
 
     useEffect(() => {

@@ -5,6 +5,7 @@ import {
     monaco
 } from '@byte-design/ts-editor';
 import {ProviderContext} from '../context/ProviderContext';
+import {runCallbacks} from '../utils';
 import {
     IPreviewerEditorProps
 } from '../types';
@@ -67,18 +68,38 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         console.log('-----------PreviewerEditor effect')
         context.editorRef = editorRef.current;
 
-        const {
-            editorOptions = {}
-        } = context;
-
         if (context.editorRef === null) {
             return;
         }
 
         const {
+            editorOptions = {},
+            onErrorCallbacks,
+            codeDidRunCallbacks,
+            codeDidCompileCallbacks
+        } = context;
+
+        const {
             editorDidCreate,
-            onCodeChange
+            onCodeChange,
+            onError,
+            codeDidCompile,
+            codeDidRun
         } = editorOptions;
+
+        editorOptions.onError = (err: Error) => {
+            onError && onErrorCallbacks.push(onError);
+
+            for (const onErrorCallback of onErrorCallbacks) {
+                onErrorCallback(err);
+            }
+        };
+
+        editorOptions.onError = runCallbacks(...onErrorCallbacks, onError);
+
+        editorOptions.codeDidCompile = runCallbacks(...codeDidCompileCallbacks, codeDidCompile);
+
+        editorOptions.codeDidRun = runCallbacks(...codeDidRunCallbacks, codeDidRun);
 
         if (autoHeight) {
             editorOptions.editorDidCreate = (editor) => {

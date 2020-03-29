@@ -1,7 +1,10 @@
 import {
     Editor,
     IEditorOptions,
-    monaco
+    monaco,
+    CodeDidRunCallback,
+    OnErrorCallback,
+    CodeDidCompileCallback
 } from '@byte-design/ts-editor';
 import {ReactNode} from 'react';
 
@@ -26,6 +29,10 @@ export interface IContext {
     editor: Editor | null;
 
     editorOptions: IEditorOptions;
+
+    codeDidCompileCallbacks: CodeDidCompileCallback[];
+    codeDidRunCallbacks: CodeDidRunCallback[];
+    onErrorCallbacks: OnErrorCallback[];
 }
 
 export interface IPreviewerEditorProps {
@@ -42,8 +49,7 @@ export interface IPreviewerEditorProps {
 
 export interface IPreviewerErrorProps {
     className?: string;
-    onError?: (error: Error | null) => void;
-    children?: ReactNode;
+    renderError?: (error: Error | null) => JSX.Element;
 }
 
 export interface IPreviewerProps {

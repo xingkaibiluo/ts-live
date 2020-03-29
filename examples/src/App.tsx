@@ -62,7 +62,7 @@ function App(): JSX.Element {
                         "@byte-design/ui": components
                     }}
                     className="flex-demo"
-                    codeDidCompile={(err, code, compiledCode) => {
+                    codeDidCompile={(code, compiledCode) => {
                     }}
                 >
                     <div className="flex-demo-main">

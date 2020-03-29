@@ -15,25 +15,23 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     const previewerRef = useRef<HTMLDivElement>(null);
 
     useMemo(() => {
-        const {
-            codeDidRun
-        } = context.editorOptions;
-
         console.log('-----------Previewer useMemo')
-        context.editorOptions.codeDidRun = (err: Error | null, ret: any, compiledCode: string) => {
-            if (!err) {
-                const Preview = errorBoundary(ret.default, (err, errorInfo) => {
-                    console.log('----------render error', err, errorInfo);
-                    codeDidRun && codeDidRun(err, ret, compiledCode);
-                });
+        const codeDidRunCallback = (ret: any, compiledCode: string) => {
+            const Preview = errorBoundary(ret.default, (err, errorInfo) => {
+                const {
+                    onError
+                } = context.editorOptions;
 
-                ReactDOM.render(<Preview />, previewerRef.current);
-            }
+                // 确保在 codeDidRun 执行完后再调用 onError
+                setTimeout(() => {
+                    onError && onError(err);
+                }, 0);
+            });
 
-            if (codeDidRun) {
-                codeDidRun(err, ret, compiledCode);
-            }
+            ReactDOM.render(<Preview />, previewerRef.current);
         };
+
+        context.codeDidRunCallbacks.push(codeDidRunCallback);
     }, []);
 
     const cls = classnames(className, 'rp-previewer');

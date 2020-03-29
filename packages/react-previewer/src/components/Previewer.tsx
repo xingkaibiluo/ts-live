@@ -17,15 +17,25 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     useMemo(() => {
         console.log('-----------Previewer useMemo')
         const codeDidRunCallback = (ret: any, compiledCode: string) => {
-            const Preview = errorBoundary(ret.default, (err, errorInfo) => {
-                const {
-                    onError
-                } = context.editorOptions;
-
+            const {
+                onError
+            } = context.editorOptions;
+            const emitError = (err: Error) => {
                 // 确保在 codeDidRun 执行完后再调用 onError
                 setTimeout(() => {
                     onError && onError(err);
                 }, 0);
+            }
+
+            const defaultExport = ret.default;
+            if (!defaultExport) {
+                emitError(new Error('Run results must be exported as default.'));
+
+                return;
+            }
+
+            const Preview = errorBoundary(defaultExport, (err, errorInfo) => {
+                emitError(err);
             });
 
             ReactDOM.render(<Preview />, previewerRef.current);

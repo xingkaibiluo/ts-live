@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
     PreviewerProvider,
     Previewer,
@@ -34,7 +34,7 @@ defineTheme('amy', amy as ThemeData);
 defineTheme('github', github as ThemeData);
 
 function App(): JSX.Element {
-    let delayEditorInstance: Editor | undefined;
+    const delayEditorRef = useRef<Editor>();
     const [showEditor, setShowEditor] = useState(false);
     const [theme, setThemeValue] = useState('github');
 
@@ -105,7 +105,9 @@ function App(): JSX.Element {
                     <Previewer />
                     <div className="edittor-toggle" onClick={() => {
                         // 如果设置了 delayInit，需要手动 init
-                        delayEditorInstance && delayEditorInstance.init();
+                        if (delayEditorRef.current) {
+                            delayEditorRef.current.init();
+                        }
                         setShowEditor(!showEditor);
                     }}>
                         > 代码编辑器
@@ -115,7 +117,7 @@ function App(): JSX.Element {
                         autoHeight
                         width={600}
                         getEditor={(editor) => {
-                            delayEditorInstance = editor;
+                            delayEditorRef.current = editor;
                         }}
                     />
                     <PreviewerError />

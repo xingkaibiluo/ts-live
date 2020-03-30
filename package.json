@@ -1,16 +1,24 @@
 {
   "name": "@byte-design/ts-previewer",
   "version": "0.0.1",
-  "description": "",
+  "description": "基于 monaco-editor 的 typescript 编辑器，ui 层提供了 react 实现，可以实时编辑 react 代码并生成预览效果",
   "main": "index.ts",
+  "keywords": [
+    "typescript",
+    "monaco-editor",
+    "typescript editor",
+    "react editor",
+    "live editor",
+    "dts-bundle"
+  ],
   "scripts": {
     "build:clean": "rm -rf packages/*/dist",
     "build": "npm run build:ts && npm run build:workers",
     "build:ts": "gulp",
     "publish:lerna": "lerna publish --exact --registry=https://bnpm.byted.org",
     "publish:all": "npm run build:ts && npm run publish:lerna",
-    "worker:clean": "rm -rf ./packages/ts-editor/workers",
-    "build-workers": "npm run worker:clean && npm run build-json-worker && npm run build-css-worker && npm run build-html-worker && npm run build-ts-worker && npm run build-editor-worker",
+    "workers:clean": "rm -rf ./packages/ts-editor/workers",
+    "build-workers": "npm run workers:clean && npm run build-json-worker && npm run build-css-worker && npm run build-html-worker && npm run build-ts-worker && npm run build-editor-worker",
     "build-json-worker": "parcel build node_modules/monaco-editor/esm/vs/language/json/json.worker.js --no-source-maps --out-dir=./packages/ts-editor/workers",
     "build-css-worker": "parcel build node_modules/monaco-editor/esm/vs/language/css/css.worker.js --no-source-maps --out-dir=./packages/ts-editor/workers",
     "build-html-worker": "parcel build node_modules/monaco-editor/esm/vs/language/html/html.worker.js --no-source-maps --out-dir=./packages/ts-editor/workers",

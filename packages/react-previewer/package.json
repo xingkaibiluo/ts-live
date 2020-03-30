@@ -1,17 +1,21 @@
 {
   "name": "@byte-design/react-previewer",
   "version": "0.0.1",
-  "description": "> TODO: description",
-  "author": "dcx <duanchuanxu@bytedance.com>",
+  "description": "typescript 编辑器，可以实时编译、预览 react 组件",
+  "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
   "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "keywords": [
+    "typescript",
+    "monaco-editor",
+    "typescript editor",
+    "react editor",
+    "live editor"
+  ],
   "publishConfig": {
     "registry": "http://bnpm.byted.org/"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "@byte-design/ts-editor": "^0.0.1",

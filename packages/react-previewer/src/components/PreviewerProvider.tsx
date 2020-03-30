@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useMemo} from 'react';
+import React, {useRef} from 'react';
 import {
     IEditorOptions,
     monaco
@@ -36,24 +36,16 @@ export function PreviewerProvider(props: IPreviewerProviderProps): JSX.Element {
     const tsEditorOptions = useRef<IEditorOptions>();
 
     if (!tsEditorOptions.current) {
-        console.log('-----------update ref')
         tsEditorOptions.current = mergeOptions(defaultOptions, options, ['editorOptions', 'compilerOptions', 'scope']);
     }
 
     const context: IContext = {
-        editorRef: null,
-        previewerRef: null,
-        errorRef: null,
         editor: null,
         editorOptions: tsEditorOptions.current,
         codeDidCompileCallbacks: [],
         codeDidRunCallbacks: [],
         onErrorCallbacks: [],
     };
-
-    useEffect(() => {
-        console.log('-----------PreviewerProvider effect')
-    });
 
     const cls = classnames(className, 'rp-provider');
 

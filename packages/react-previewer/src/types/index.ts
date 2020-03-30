@@ -1,3 +1,4 @@
+import {ReactNode} from 'react';
 import {
     Editor,
     IEditorOptions,
@@ -6,7 +7,6 @@ import {
     OnErrorCallback,
     CodeDidCompileCallback
 } from '@byte-design/ts-editor';
-import {ReactNode} from 'react';
 
 export type ThemeData = monaco.editor.IStandaloneThemeData;
 
@@ -20,14 +20,7 @@ export interface IPreviewerProviderProps extends IEditorOptions {
 }
 
 export interface IContext {
-    editorRef: HTMLElement | null;
-
-    previewerRef: HTMLElement | null;
-
-    errorRef: HTMLElement | null;
-
     editor: Editor | null;
-
     editorOptions: IEditorOptions;
 
     codeDidCompileCallbacks: CodeDidCompileCallback[];
@@ -36,19 +29,24 @@ export interface IContext {
 }
 
 export interface IPreviewerEditorProps {
+    // editor width
     width: string;
+    // editor height
     height?: string;
+    // editor 是否自适应内容高度
     autoHeight?: boolean;
     // autoHeight 为 true 时，编辑器最小高度
     minHeight?: number;
     // autoHeight 为 true 时，编辑器最大高度，为 0 时表示不限制高度
     maxHeight?: number;
-    className?: string;
+    // 获取 editor 实例
     getEditor?: (editor: Editor) => void;
+    className?: string;
 }
 
 export interface IPreviewerErrorProps {
     className?: string;
+    // 当有错误时，自定义渲染 error
     renderError?: (error: Error | null) => JSX.Element;
 }
 

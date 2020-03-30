@@ -4,13 +4,15 @@ import {
     Previewer,
     PreviewerEditor,
     PreviewerError,
-    ITypes,
     ThemeData,
     defineTheme,
+    setTheme,
+    ITypes,
     Editor
 } from '@byte-design/react-previewer';
 import '@byte-design/react-previewer/style/index.css';
 import * as components from '@byte-design/ui';
+import {RadioGroup} from '@byte-design/ui';
 import '@byte-design/ui/themes/platform/index.css';
 import Demo from './Demo';
 import typesData from './dts/types.json';
@@ -32,9 +34,11 @@ defineTheme('amy', amy as ThemeData);
 defineTheme('github', github as ThemeData);
 
 function App(): JSX.Element {
-    const [showEditor, setShowEditor] = useState(false);
-    const hideEditorCls = showEditor ? '' : 'editor--hidden';
     let delayEditorInstance: Editor | undefined;
+    const [showEditor, setShowEditor] = useState(false);
+    const [theme, setThemeValue] = useState('github');
+
+    const hideEditorCls = showEditor ? '' : 'editor--hidden';
 
     return (
         <div className="demos-contailer">
@@ -89,6 +93,7 @@ function App(): JSX.Element {
                 >
                     <Previewer />
                     <div className="edittor-toggle" onClick={() => {
+                        // 如果设置了 delayInit，需要手动 init
                         delayEditorInstance && delayEditorInstance.init();
                         setShowEditor(!showEditor);
                     }}>
@@ -115,10 +120,25 @@ function App(): JSX.Element {
                     }}
                     editorOptions={{
                         // 使用 defineTheme 定义后的主题
-                        theme: 'github'
+                        theme
                     }}
                     className="flex-demo"
                 >
+                    <RadioGroup
+                        type="button"
+                        value={theme}
+                        onChange={(value) => {
+                            if (value) {
+                                setThemeValue(value);
+                                setTheme(value);
+                            }
+                        }}
+                        style={{marginBottom: 10}}
+                    >
+                        <RadioGroup.Button value="github">github</RadioGroup.Button>
+                        <RadioGroup.Button value="active4d">active4d</RadioGroup.Button>
+                        <RadioGroup.Button value="amy">amy</RadioGroup.Button>
+                    </RadioGroup>
                     <div className="flex-demo-main">
                         <PreviewerEditor width="640px" height="400px" />
                         <Previewer />

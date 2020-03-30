@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useContext, Fragment} from 'react';
+import React, {useMemo, useState, useContext} from 'react';
 import classnames from 'classnames';
 import {ProviderContext} from '../context/ProviderContext';
 import {
@@ -20,7 +20,6 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element | null 
             codeDidRunCallbacks
         } = context;
 
-        console.log('-----------PreviewerError useMemo')
         const onErrorCallback = (err: Error) => setError(err);
         const codeDidRunCallback = (ret: any, compiledCode: string) => setError(null);
         const codeDidCompileCallback = (code: string, compiledCode: string) => setError(null);

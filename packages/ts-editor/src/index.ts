@@ -2,6 +2,8 @@ export {
     Editor,
     IEditorOptions,
     ITypes,
+    IHooks,
+    Scope,
     EditorWillCreateCallback,
     EditorDidCreateCallback,
     OnCodeChangeCallback,

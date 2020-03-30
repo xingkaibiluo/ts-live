@@ -65,10 +65,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
 
 
     useEffect(() => {
-        console.log('-----------PreviewerEditor effect')
-        context.editorRef = editorRef.current;
-
-        if (context.editorRef === null) {
+        if (editorRef.current === null) {
             return;
         }
 
@@ -86,14 +83,6 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
             codeDidCompile,
             codeDidRun
         } = editorOptions;
-
-        editorOptions.onError = (err: Error) => {
-            onError && onErrorCallbacks.push(onError);
-
-            for (const onErrorCallback of onErrorCallbacks) {
-                onErrorCallback(err);
-            }
-        };
 
         editorOptions.onError = runCallbacks(...onErrorCallbacks, onError);
 
@@ -118,7 +107,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
             }
         }
 
-        editor.current = new Editor(context.editorRef, editorOptions);
+        editor.current = new Editor(editorRef.current, editorOptions);
         getEditor && getEditor(editor.current);
         // editor.current.init();
 

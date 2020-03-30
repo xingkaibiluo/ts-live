@@ -1,32 +1,24 @@
+export {PreviewerProvider} from './components/PreviewerProvider';
 
-export {
-    PreviewerProvider
-} from './components/PreviewerProvider';
+export {PreviewerEditor} from './components/PreviewerEditor';
 
-export {
-    PreviewerEditor
-} from './components/PreviewerEditor';
+export {PreviewerError} from './components/PreviewerError';
 
-export {
-    PreviewerError
-} from './components/PreviewerError';
-
-
-export {
-    Previewer
-} from './components/Previewer';
+export {Previewer} from './components/Previewer';
 
 export {
     IPreviewerProviderProps,
+    IPreviewerEditorProps,
+    IPreviewerErrorProps,
+    IPreviewerProps,
+    IContext,
     ThemeData
 } from './types';
 
-export {
-    ITypes,
-    Editor
-} from '@byte-design/ts-editor';
 
 export {
     defineTheme,
     setTheme
 } from './utils';
+
+export * from '@byte-design/ts-editor';

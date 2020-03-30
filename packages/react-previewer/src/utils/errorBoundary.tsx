@@ -4,9 +4,7 @@ export interface IState {
     hasError: boolean;
 }
 
-export interface IProps {
-
-}
+export interface IProps {}
 
 export const errorBoundary = (Element: any, errorCallback: (error: Error, errorInfo: ErrorInfo) => void) => {
     return class ErrorBoundary extends Component {

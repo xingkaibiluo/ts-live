@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useContext, useState} from 'react';
+import React, {useMemo, useRef, useContext} from 'react';
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 import {ProviderContext} from '../context/ProviderContext';
@@ -15,19 +15,20 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     const previewerRef = useRef<HTMLDivElement>(null);
 
     useMemo(() => {
-        console.log('-----------Previewer useMemo')
-        const codeDidRunCallback = (ret: any, compiledCode: string) => {
+        const emitError = (err: Error) => {
             const {
                 onError
             } = context.editorOptions;
-            const emitError = (err: Error) => {
-                // 确保在 codeDidRun 执行完后再调用 onError
-                setTimeout(() => {
-                    onError && onError(err);
-                }, 0);
-            }
 
+            // 确保在 codeDidRun 执行完后再调用 onError
+            setTimeout(() => {
+                onError && onError(err);
+            }, 0);
+        };
+
+        const codeDidRunCallback = (ret: any, compiledCode: string) => {
             const defaultExport = ret.default;
+
             if (!defaultExport) {
                 emitError(new Error('Run results must be exported as default.'));
 
@@ -47,8 +48,7 @@ export function Previewer(props: IPreviewerProps): JSX.Element {
     const cls = classnames(className, 'rp-previewer');
 
     return (
-        <div className={cls}>
-            <div ref={previewerRef}></div>
+        <div className={cls} ref={previewerRef}>
         </div>
     );
 }

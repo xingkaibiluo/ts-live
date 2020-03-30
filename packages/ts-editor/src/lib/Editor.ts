@@ -12,30 +12,40 @@ export type CodeWillRunCallback = (compiledCode: string) => Promise<boolean | vo
 export type CodeDidRunCallback = (ret: any, compiledCode: string) => void;
 export type OnErrorCallback = (err: Error) => void;
 
-interface IHooks {
+export interface IHooks {
+    // monaco-editor 创建之前触发
     editorWillCreate?: EditorWillCreateCallback;
+    // monaco-editor 创建完成后触发
     editorDidCreate?: EditorDidCreateCallback;
+    // editor 内容有改动时触发
     onCodeChange?: OnCodeChangeCallback;
+    // code 编译之前触发，如果回调返回 false 会阻止编译
     codeWillCompile?: CodeWillCompileCallback;
+    // code 编译成功后触发
     codeDidCompile?: CodeDidCompileCallback;
+    // code 运行之前触发，如果回调返回 false 会阻止运行
     codeWillRun?: CodeWillRunCallback;
+    // code 运行成功后触发
     codeDidRun?: CodeDidRunCallback;
+    // 编译或运行过程中有遇到错误时触发
     onError?: OnErrorCallback;
 }
 
 export type ITypes = Record<string, string>;
 
 export type IEditorOptions = IHooks & {
-    code?: string;
+    code?: string; // 初始化代码
     compiledCode?: string; // 初始化运行的代码
     delayInit?: boolean; // 是否延迟初始化
-    delay?: number;
-    runable?: boolean;
-    compilable?: boolean;
-    types?: ITypes;
-    scope?: Scope;
+    delay?: number; // editor 内容改动后会触发 onCodeChange，该选项用来设置触发延迟的间隔时间
+    runable?: boolean; // 是否可运行 code
+    compilable?: boolean; // 是否可编译 code
+    types?: ITypes; // module 的类型定义，用来类型提示，格式为 {[moduleName: string]: types string}
+    scope?: Scope; // 用来像 editor 注入代码依赖的的 module，以使代码可正常执行
     language?: IEditorLanguage;
+    // monaco-editor 的编译选项
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
+    // monaco-editor 实例编辑器时的选项
     editorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
 };
 
@@ -58,28 +68,34 @@ export class Editor {
 
     protected editorOptions: monaco.editor.IStandaloneEditorConstructionOptions;
 
-    protected readonly hooks: IHooks;
+    protected hooks: IHooks;
 
     protected language: IEditorLanguage;
 
+    // 初始化时的 compiledCode
     protected originalCompiledCode: string | undefined;
 
+    // editor 最新的 compiledCode
     protected latestCompiledCode: string;
 
+    // 初始化时的 code
     protected originalCode: string;
 
+    // editor 最新的 code
     protected latestCode: string;
 
+    // 挂载 editor 的 dom 元素
     protected domElement: HTMLElement;
 
     protected scope: Scope;
 
-    protected delay = 100;
+    protected delay: number;
 
     protected runable: boolean = true;
 
     protected compilable: boolean = true;
 
+    // 是否已执行过 init
     protected inited: boolean = false;
 
     constructor(domElement: HTMLElement, options: IEditorOptions) {
@@ -150,8 +166,10 @@ export class Editor {
         this.latestCompiledCode = compiledCode || '';
         this.hooks = Object.assign({}, hooks);
 
+        // 收集 types
         this.addTypes(types);
 
+        // monaco-editor 初始化比较长，初始化成功后还要对 code 进行编译，会使输出结果延迟比较长。如果有传递 compiledCode 会对该代码立即执行，可以有效减少等待时间。
         if (compiledCode && runable) {
             this.runCode(compiledCode);
         }
@@ -159,22 +177,31 @@ export class Editor {
         !delayInit && this._init();
     }
 
+    /**
+     * 定义 monaco-editor 主题
+     * @param themeName 
+     * @param themeData 
+     */
     public static defineTheme(themeName: string, themeData: monaco.editor.IStandaloneThemeData): void {
         monaco.editor.defineTheme(themeName, themeData);
     }
 
+    /**
+     * 使用自定义主题
+     * @param themeName 
+     */
     public static setTheme(themeName: string): void {
         monaco.editor.setTheme(themeName);
     }
 
-    public get languageDefaults(): monaco.languages.typescript.LanguageServiceDefaults {
-
-        return this.language === 'javascript' ?
-            monaco.languages.typescript.javascriptDefaults
-            :
-            monaco.languages.typescript.typescriptDefaults;
+    public init() {
+        this._init();
     }
 
+    /**
+     * 获取 monaco worker
+     * @param language 
+     */
     public getWorkerProcess(language: IEditorLanguage): Promise<any> {
 
         if (language === 'javascript') {
@@ -184,6 +211,9 @@ export class Editor {
         return monaco.languages.typescript.getTypeScriptWorker();
     }
 
+    /**
+     * 获取 monaco editor 实例
+    */
     public get monacoEditor(): monaco.editor.IStandaloneCodeEditor {
 
         if (this._monacoEditor == null) {
@@ -193,6 +223,9 @@ export class Editor {
         return this._monacoEditor;
     }
 
+    /**
+     * 获取 monaco-editor model
+    */
     public get monacoModel(): monaco.editor.ITextModel {
 
         if (this._monacoModel == null) {
@@ -211,10 +244,16 @@ export class Editor {
         this._monacoModel = model;
     }
 
+    /**
+     * 获取 editor 的当前内容
+    */
     public get code(): string {
         return this.latestCode;
     }
 
+    /**
+     * 获取 editor 的当前内容编译后的代码
+    */
     public get compiledCode(): string | undefined {
         return this.latestCompiledCode;
     }
@@ -223,12 +262,10 @@ export class Editor {
         return monaco.editor.getModelMarkers({resource: this.monacoModel.uri});
     }
 
-    public init() {
-        this._init();
-    }
-
+    /**
+     * editor 销毁清理
+     */
     public dispose() {
-
         if (this.inited) {
             this.monacoModel.dispose();
             this.monacoEditor.dispose();
@@ -236,6 +273,10 @@ export class Editor {
         }
     }
 
+    /**
+     * 运行 compiledCode
+     * @param compiledCode 
+     */
     public async runCode(compiledCode: string) {
         const {
             codeWillRun,
@@ -273,14 +314,20 @@ export class Editor {
         }
     }
 
+    /**
+     * 重置 editor 内容为初始化时的 code
+     */
     public resetCode() {
         if (this.inited) {
             this.monacoModel.setValue(this.originalCode);
         }
     }
 
+    /**
+     * 初始化 monaco
+     */
     protected async _init() {
-
+        // 避免重复初始化
         if (this.inited) {
             return;
         }
@@ -316,15 +363,27 @@ export class Editor {
         }, 0);
     }
 
+    protected get languageDefaults(): monaco.languages.typescript.LanguageServiceDefaults {
+
+        return this.language === 'javascript' ?
+            monaco.languages.typescript.javascriptDefaults
+            :
+            monaco.languages.typescript.typescriptDefaults;
+    }
+
+    /**
+     * 收集 type
+     * @param types 
+     */
     protected addTypes(types: ITypes) {
 
         const addedTypes = this.language === 'typescript' ? Editor.tsTypes : Editor.jsTypes;
 
-        Object.entries(types).forEach(([path, content]) => {
-
-            if (addedTypes.indexOf(path) === -1) {
-                this.languageDefaults.addExtraLib(content, `file:///node_modules/${path}.d.ts`);
-                addedTypes.push(path);
+        Object.entries(types).forEach(([moduleName, typeContent]) => {
+            // 避免重复注入相同 moduleName 的 type
+            if (addedTypes.indexOf(moduleName) === -1) {
+                this.languageDefaults.addExtraLib(typeContent, `file:///node_modules/${moduleName}.d.ts`);
+                addedTypes.push(moduleName);
             }
         });
     }
@@ -335,11 +394,11 @@ export class Editor {
             editorDidCreate
         } = this.hooks;
 
-
         if (isFunction(editorDidCreate)) {
             editorDidCreate(this);
         }
 
+        // 避免频繁编译、执行 code，使用 debounce 限流
         const handleDebounce = debounce((e) => {
             const changedCode = this.monacoModel.getValue();
 
@@ -352,6 +411,7 @@ export class Editor {
 
         }, this.delay);
 
+        // 监听 monaco content 改变
         this.monacoEditor.onDidChangeModelContent((e) => {
             handleDebounce(e);
         });
@@ -363,11 +423,12 @@ export class Editor {
             onError
         } = this.hooks;
 
-
         if (!err) {
+            // 编译成功
             isFunction(codeDidCompile) && codeDidCompile(code, compiledCode);
             this.runCode(compiledCode);
         } else {
+            // 编译失败
             isFunction(onError) && onError(err);
         }
     }
@@ -428,6 +489,10 @@ export class Editor {
         return monaco.Uri.file(filepath);
     }
 
+    /**
+     * 通过 moduleName 查找对应的 module
+     * @param moduleName 
+     */
     protected requireMod(moduleName: string) {
         let mod: any;
 

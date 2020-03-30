@@ -10,7 +10,7 @@ import minifyCss from 'gulp-minify-css';
 import rename from 'gulp-rename';
 import merge from 'merge2';
 import config from './tsconfig.json';
-// import babel from 'gulp-babel';
+
 const babel = require('gulp-babel');
 const clean = require('gulp-clean');
 
@@ -126,7 +126,7 @@ function createCopyTask(name: string): string[] {
     const copyJsTask = `copy-js-${name}`;
     const copyCssTask = `copy-css-${name}`;
 
-    // copy src 下所有非 ts 文件
+    // copy src 下所有非 ts、less 文件
     gulp.task(copyJsonTask, () => {
         const result = gulp.src([
             `packages/${name}/src/**/**`,

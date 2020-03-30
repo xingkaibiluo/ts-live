@@ -40,7 +40,7 @@ const autoHeightCreator = (callback?: (height: number) => void) => {
 export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
     const {
         width,
-        height = '0px',
+        height = 0,
         className,
         autoHeight = false,
         minHeight = 0,
@@ -52,7 +52,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
     const editor = useRef<Editor>();
     const editorRef = useRef<HTMLDivElement>(null);
 
-    const [editorHeight, setEditorHeight] = useState<string>(height);
+    const [editorHeight, setEditorHeight] = useState<number>(height);
     const autoHeightHandle = useCallback(autoHeightCreator(height => {
         if (height < minHeight) {
             height = minHeight;
@@ -60,7 +60,7 @@ export function PreviewerEditor(props: IPreviewerEditorProps): JSX.Element {
         if (maxHeight > 0 && height > maxHeight) {
             height = maxHeight;
         }
-        setEditorHeight(`${height}px`);
+        setEditorHeight(height);
     }), []);
 
 

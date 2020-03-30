@@ -51,10 +51,21 @@ function App(): JSX.Element {
                     className="flex-demo"
                 >
                     <div className="flex-demo-main">
-                        <PreviewerEditor width="600px" height="400px" />
+                        <PreviewerEditor width={600} height={400} />
                         <Previewer />
                     </div>
-                    <PreviewerError />
+                    <PreviewerError
+                        renderError={(err: Error | null) => {
+                            if (!err) {
+                                return null;
+                            }
+                            return (
+                                <div style={{color: 'red'}}>
+                                    {err.message}
+                                </div>
+                            )
+                        }}
+                    />
                 </PreviewerProvider>
             </Demo>
 
@@ -72,7 +83,7 @@ function App(): JSX.Element {
                     <div className="flex-demo-main">
                         <Previewer />
                         <PreviewerEditor
-                            width="600px"
+                            width={600}
                             autoHeight
                             minHeight={300}
                         />
@@ -102,7 +113,7 @@ function App(): JSX.Element {
                     <PreviewerEditor
                         className={hideEditorCls}
                         autoHeight
-                        width="600px"
+                        width={600}
                         getEditor={(editor) => {
                             delayEditorInstance = editor;
                         }}
@@ -140,7 +151,7 @@ function App(): JSX.Element {
                         <RadioGroup.Button value="amy">amy</RadioGroup.Button>
                     </RadioGroup>
                     <div className="flex-demo-main">
-                        <PreviewerEditor width="640px" height="400px" />
+                        <PreviewerEditor width={600} height={400} />
                         <Previewer />
                     </div>
                     <PreviewerError />

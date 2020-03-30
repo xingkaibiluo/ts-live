@@ -30,9 +30,9 @@ export interface IContext {
 
 export interface IPreviewerEditorProps {
     // editor width
-    width: string;
+    width: number;
     // editor height
-    height?: string;
+    height?: number;
     // editor 是否自适应内容高度
     autoHeight?: boolean;
     // autoHeight 为 true 时，编辑器最小高度
@@ -47,7 +47,7 @@ export interface IPreviewerEditorProps {
 export interface IPreviewerErrorProps {
     className?: string;
     // 当有错误时，自定义渲染 error
-    renderError?: (error: Error | null) => JSX.Element;
+    renderError?: (error: Error | null) => JSX.Element | null;
 }
 
 export interface IPreviewerProps {

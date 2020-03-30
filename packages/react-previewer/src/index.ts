@@ -6,6 +6,8 @@ export {PreviewerError} from './components/PreviewerError';
 
 export {Previewer} from './components/Previewer';
 
+import {ProviderContext} from './context/ProviderContext';
+
 export {
     IPreviewerProviderProps,
     IPreviewerEditorProps,

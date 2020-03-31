@@ -1,17 +1,19 @@
 {
   "name": "@byte-design/ts-editor",
   "version": "0.0.1",
-  "description": "> TODO: description",
-  "author": "dcx <duanchuanxu@bytedance.com>",
+  "description": "基于 monaco-editor 的 typescript 编辑器",
+  "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
   "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "keywords": [
+    "typescript",
+    "monaco-editor",
+    "typescript editor"
+  ],
   "publishConfig": {
     "registry": "http://bnpm.byted.org/"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "monaco-editor": "^0.20.0"

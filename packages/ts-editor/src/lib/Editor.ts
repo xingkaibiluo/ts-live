@@ -198,6 +198,10 @@ export class Editor {
         this._init();
     }
 
+    public getInited(): boolean {
+        return this.inited;
+    }
+
     /**
      * 获取 monaco worker
      * @param language 

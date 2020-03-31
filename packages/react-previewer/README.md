@@ -55,7 +55,7 @@ import {
     Previewer,
     PreviewerEditor,
     PreviewerError
-} from '@byte-design/react-previewer';
+} from '@ts-live/react-previewer';
 
 <PreviewerProvider
     code={'<strong>Hello World!</strong>'}
@@ -79,7 +79,7 @@ import {
 |---|---|---|---|
 | className | 自定义class name | string | -- |
 
-`PreviewerProvider` 的 props 还支持 `@byte-design/ts-editor` 包的 `IEditorOptions` 所有[选项]()。
+`PreviewerProvider` 的 props 还支持 `@ts-live/ts-editor` 包的 `IEditorOptions` 所有[选项]()。
 
 ### &lt;PreviewerEditor/&gt;
 

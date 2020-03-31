@@ -6,7 +6,7 @@ import {
     CodeDidRunCallback,
     OnErrorCallback,
     CodeDidCompileCallback
-} from '@byte-design/ts-editor';
+} from '@ts-live/ts-editor';
 
 export type ThemeData = monaco.editor.IStandaloneThemeData;
 

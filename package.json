@@ -1,5 +1,5 @@
 {
-  "name": "@byte-design/ts-previewer",
+  "name": "@ts-live/ts-previewer",
   "version": "0.0.1",
   "description": "基于 monaco-editor 的 typescript 编辑器，ui 层提供了 react 实现，可以实时编辑 react 代码并生成预览效果",
   "main": "index.ts",

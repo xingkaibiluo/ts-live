@@ -6,7 +6,7 @@ export {PreviewerError} from './components/PreviewerError';
 
 export {Previewer} from './components/Previewer';
 
-import {ProviderContext} from './context/ProviderContext';
+export {ProviderContext} from './context/ProviderContext';
 
 export {
     IPreviewerProviderProps,
@@ -23,4 +23,4 @@ export {
     setTheme
 } from './utils';
 
-export * from '@byte-design/ts-editor';
+export * from '@ts-live/ts-editor';

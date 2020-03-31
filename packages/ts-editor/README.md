@@ -7,7 +7,7 @@
 ### 安装：
 
 ```bash
-npm i @byte-design/ts-editor
+npm i @ts-live/ts-editor
 ```
 
 ### 使用
@@ -16,7 +16,7 @@ npm i @byte-design/ts-editor
 import {
     Editor,
     monaco
-} from '@byte-design/ts-editor';
+} from '@ts-live/ts-editor';
 
 const editor = new Editor(domElement, options);
 ```

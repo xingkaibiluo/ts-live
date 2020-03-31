@@ -1,5 +1,5 @@
 {
-  "name": "@byte-design/react-previewer",
+  "name": "@ts-live/react-previewer",
   "version": "0.0.1",
   "description": "typescript 编辑器，可以实时编译、预览 react 组件",
   "author": "duanchuanxu <2364116168@qq.com>",
@@ -18,7 +18,7 @@
     "registry": "http://bnpm.byted.org/"
   },
   "dependencies": {
-    "@byte-design/ts-editor": "^0.0.1",
+    "@ts-live/ts-editor": "^0.0.1",
     "@types/classnames": "^2.2.10",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",

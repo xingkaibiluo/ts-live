@@ -2,7 +2,7 @@
     "compilerOptions": {
         "baseUrl": "../packages",
         "paths": {
-            "@byte-design/*": [
+            "@ts-live/*": [
                 "./*/src"
             ]
         }

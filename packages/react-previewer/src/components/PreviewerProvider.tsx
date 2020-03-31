@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import {
     IEditorOptions,
     monaco
-} from '@byte-design/ts-editor';
+} from '@ts-live/ts-editor';
 import classnames from 'classnames';
 import {ProviderContext} from '../context/ProviderContext';
 import {mergeOptions} from '../utils';

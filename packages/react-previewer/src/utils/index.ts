@@ -1,4 +1,4 @@
-import {Editor} from '@byte-design/ts-editor';
+import {Editor} from '@ts-live/ts-editor';
 import {
     ThemeData,
     IPlainObject

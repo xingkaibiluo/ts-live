@@ -9,8 +9,8 @@ import {
     setTheme,
     ITypes,
     Editor
-} from '@byte-design/react-previewer';
-import '@byte-design/react-previewer/style/index.css';
+} from '@ts-live/react-previewer';
+import '@ts-live/react-previewer/style/index.css';
 import * as components from '@byte-design/ui';
 import {RadioGroup} from '@byte-design/ui';
 import '@byte-design/ui/themes/platform/index.css';

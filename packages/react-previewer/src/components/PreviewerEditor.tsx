@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import {
     Editor,
     monaco
-} from '@byte-design/ts-editor';
+} from '@ts-live/ts-editor';
 import {ProviderContext} from '../context/ProviderContext';
 import {runCallbacks} from '../utils';
 import {

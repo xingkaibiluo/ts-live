@@ -4,7 +4,6 @@
   "description": "Export TypeScript .d.ts files as an external module definition",
   "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
-  "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "keywords": [
@@ -26,5 +25,6 @@
     "chalk": "^3.0.0",
     "commander": "^5.0.0",
     "mkdirp": "^1.0.3"
-  }
+  },
+  "gitHead": "99a3eff32d3a840abc0cb72bbc890d42e7949648"
 }

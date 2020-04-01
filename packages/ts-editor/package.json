@@ -4,7 +4,6 @@
   "description": "基于 monaco-editor 的 typescript 编辑器",
   "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
-  "license": "ISC",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "keywords": [
@@ -17,5 +16,6 @@
   },
   "dependencies": {
     "monaco-editor": "^0.20.0"
-  }
+  },
+  "gitHead": "99a3eff32d3a840abc0cb72bbc890d42e7949648"
 }

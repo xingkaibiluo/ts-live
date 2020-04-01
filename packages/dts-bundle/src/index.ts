@@ -92,7 +92,6 @@ export class DtsBundle {
         this.debugOut = debugOut;
         this.extraModules = extraModules;
         this.extraReferences = extraReferences;
-
     }
 
     public bundle() {

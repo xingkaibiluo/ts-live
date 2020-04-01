@@ -17,11 +17,9 @@ export {
     ThemeData
 } from './types';
 
-
 export {
     defineTheme,
     setTheme
 } from './utils';
-
 
 export * from '@ts-live/ts-editor';

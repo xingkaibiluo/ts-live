@@ -8,12 +8,12 @@
 ### 安装：
 
 ```bash
-npm i dts-bundle
+npm i @ts-live/dts-bundle
 ```
 
 ### 使用
 ```ts
-import {DtsBundle} from 'dts-bundle';
+import {DtsBundle} from '@ts-live/dts-bundle';
 
 const dts = new DtsBundle({
     projectDir: __dirname,

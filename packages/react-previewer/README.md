@@ -7,7 +7,7 @@
 ### 安装：
 
 ```bash
-npm i react-previewer
+npm i @ts-live/react-previewer
 ```
 
 ### Demo

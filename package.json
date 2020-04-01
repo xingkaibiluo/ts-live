@@ -19,7 +19,7 @@
     "build:clean": "rm -rf packages/*/dist",
     "build": "npm run build:ts && npm run build-workers",
     "build:ts": "gulp",
-    "publish:lerna": "lerna publish --exact --skip-temp-tag --registry=https://registry.npmjs.org/",
+    "publish:lerna": "lerna publish --exact --registry=https://registry.npmjs.org/",
     "publish:all": "npm run build && npm run publish:lerna",
     "workers:clean": "rm -rf ./packages/ts-editor/workers",
     "build-workers": "npm run workers:clean && npm run build-json-worker && npm run build-css-worker && npm run build-html-worker && npm run build-ts-worker && npm run build-editor-worker",

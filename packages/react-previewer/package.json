@@ -14,7 +14,7 @@
     "live editor"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "access": "public"
   },
   "dependencies": {
     "@ts-live/ts-editor": "0.0.6",
@@ -25,5 +25,5 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "gitHead": "99a3eff32d3a840abc0cb72bbc890d42e7949648"
+  "gitHead": "307a35e37aebb757d1f36195597ec62982baab8b"
 }

@@ -18,4 +18,4 @@ typescript 编辑器，可以实时编译、运行代码并生成预览效果。
 
 ## examples 
 
-examples 提供了一个完整项目用来演示如何开发一个支持 typescript 的 react 实时编辑预览编辑器。
+examples 提供了一个完整项目用来演示如何开发一个支持 typescript 的 react 实时预览编辑器。

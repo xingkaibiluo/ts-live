@@ -15,7 +15,7 @@
     "live editor"
   ],
   "publishConfig": {
-    "registry": "http://bnpm.byted.org/"
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@ts-live/ts-editor": "^0.0.1",

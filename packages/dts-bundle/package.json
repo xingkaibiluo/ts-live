@@ -15,7 +15,7 @@
     "d.ts"
   ],
   "publishConfig": {
-    "registry": "http://bnpm.byted.org/"
+    "registry": "https://registry.npmjs.org/"
   },
   "bin": {
     "dts-bundle": "dist/bin/dts-bundle.js"

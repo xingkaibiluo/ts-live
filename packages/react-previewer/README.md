@@ -79,7 +79,7 @@ import {
 |---|---|---|---|
 | className | 自定义class name | string | -- |
 
-`PreviewerProvider` 的 props 还支持 `@ts-live/ts-editor` 包的 `IEditorOptions` 所有[选项]()。
+`PreviewerProvider` 的 props 还支持 `@ts-live/ts-editor` 包的 `IEditorOptions` 所有[选项](../ts-editor)。
 
 ### &lt;PreviewerEditor/&gt;
 

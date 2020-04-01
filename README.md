@@ -3,7 +3,7 @@
 
 >  基于 `monaco-editor` 的 typescript 编辑器，ui 层提供了 react 实现，可以实时编辑 react 代码并生成预览效果。
 
-该仓库包含2个包：
+该仓库包含3个包：
 
 ## react-previewer
 

@@ -11,7 +11,7 @@ typescript 编辑器，可以实时编译、运行代码并生成预览效果。
 
 ## ts-editor
 
-基于 [monaco-editor](https://microsoft.github.io/monaco-editor/) 的 typesc 编辑器，支持实时编译、预览。具体使用参考[文档](./packages/ts-editor)。
+基于 [monaco-editor](https://microsoft.github.io/monaco-editor/) 的 typescript 编辑器，支持实时编译、预览。具体使用参考[文档](./packages/ts-editor)。
 
 ## dts-bundle
 

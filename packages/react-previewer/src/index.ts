@@ -17,7 +17,6 @@ export {
     ThemeData
 } from './types';
 
-
 export {
     defineTheme,
     setTheme

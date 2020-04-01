@@ -1,6 +1,6 @@
 {
   "name": "@ts-live/dts-bundle",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Export TypeScript .d.ts files as an external module definition",
   "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",

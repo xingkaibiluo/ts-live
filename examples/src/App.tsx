@@ -48,6 +48,7 @@ function App(): JSX.Element {
                     editorDidCreate={(editor) => {
                         console.log('editorDidCreate...')
                     }}
+                    types={types}
                     className="flex-demo"
                 >
                     <div className="flex-demo-main">

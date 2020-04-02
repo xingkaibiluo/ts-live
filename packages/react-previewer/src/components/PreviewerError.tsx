@@ -29,17 +29,16 @@ export function PreviewerError(props: IPreviewerErrorProps): JSX.Element | null 
         codeDidRunCallbacks.push(codeDidRunCallback);
     }, []);
 
-    const cls = classnames(className, 'rp-error');
-
     if (renderError) {
-        const ErrorElement = renderError(error);
 
-        return ErrorElement;
+        return renderError(error);
     }
 
     if (!error) {
         return null;
     }
+
+    const cls = classnames(className, 'rp-error');
 
     return (
         <div className={cls}>

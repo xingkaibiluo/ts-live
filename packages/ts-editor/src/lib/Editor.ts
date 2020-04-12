@@ -453,13 +453,20 @@ export class Editor {
         return this.getWorkerProcess(this.language)
             .then((worker: any) => {
                 return worker(this.monacoModel.uri).then((client: any, a: any) => {
-
                     // compile code
                     const filePath = this.monacoModel.uri.toString();
+                    const getDiagnostics = [client.getSyntacticDiagnostics(filePath)];
 
-                    return client.getSemanticDiagnostics(filePath)
+                    if (this.language === 'typescript') {
+                        // typescript 同时进行语义检查
+                        getDiagnostics.push(client.getSemanticDiagnostics(filePath));
+                    }
+
+                    return Promise.all(getDiagnostics)
                         .then((diagnostics: any) => { // 如果有语法错误，跳过执行
-                            diagnostics.forEach((diagnostic: any) => {
+                            const flattenDiagnostics = diagnostics.flat();
+
+                            flattenDiagnostics.forEach((diagnostic: any) => {
                                 if (diagnostic.category === 1) { // 过滤 error，即 category=1
                                     const messageText = typeof diagnostic.messageText === 'string' ? diagnostic.messageText : diagnostic.messageText.messageText;
 
@@ -486,7 +493,7 @@ export class Editor {
     protected createFile(): monaco.Uri {
 
         const isJSX = this.compilerOptions.jsx !== monaco.languages.typescript.JsxEmit.None;
-        const fileExt = this.language === 'typescript' ? 'ts' : 'js';
+        const fileExt = this.language === 'typescript' ? 'ts' : 'ts';
         const ext = isJSX ? fileExt + 'x' : fileExt;
         const filepath = `input${guid()}.${ext}`;
 

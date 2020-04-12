@@ -5,7 +5,7 @@
   "dependencies": {
     "@byte-design/illustration": "^0.1.2",
     "@byte-design/ui": "^0.7.17",
-    "@ts-live/react-previewer": "^0.0.7",
+    "@ts-live/react-previewer": "^0.0.8",
     "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "react-scripts": "3.4.0",

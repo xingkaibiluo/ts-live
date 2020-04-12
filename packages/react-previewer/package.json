@@ -19,11 +19,7 @@
   "dependencies": {
     "@ts-live/ts-editor": "0.0.7",
     "@types/classnames": "^2.2.10",
-    "@types/react": "^16.9.25",
-    "@types/react-dom": "^16.9.5",
-    "classnames": "^2.2.6",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "classnames": "^2.2.6"
   },
   "gitHead": "307a35e37aebb757d1f36195597ec62982baab8b"
 }

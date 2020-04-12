@@ -1,6 +1,6 @@
 {
   "name": "@ts-live/react-previewer",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "typescript 编辑器，可以实时编译、预览 react 组件",
   "author": "duanchuanxu <2364116168@qq.com>",
   "homepage": "",
@@ -17,7 +17,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@ts-live/ts-editor": "0.0.7",
+    "@ts-live/ts-editor": "0.0.8",
     "@types/classnames": "^2.2.10",
     "classnames": "^2.2.6"
   },

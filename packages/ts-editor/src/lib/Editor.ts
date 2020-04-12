@@ -493,7 +493,7 @@ export class Editor {
     protected createFile(): monaco.Uri {
 
         const isJSX = this.compilerOptions.jsx !== monaco.languages.typescript.JsxEmit.None;
-        const fileExt = this.language === 'typescript' ? 'ts' : 'ts';
+        const fileExt = 'ts';
         const ext = isJSX ? fileExt + 'x' : fileExt;
         const filepath = `input${guid()}.${ext}`;
 

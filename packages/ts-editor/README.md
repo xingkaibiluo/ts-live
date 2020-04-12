@@ -32,9 +32,9 @@ interface IEditorOptions = {
     delay?: number; // editor 内容改动后会触发 onCodeChange，该选项用来设置触发延迟的间隔时间
     runable?: boolean; // 是否可运行 code
     compilable?: boolean; // 是否可编译 code
-    types?: ITypes; // module 的类型定义，用来类型提示，格式为 {[moduleName: string]: types string}，可以使用提供的工具包 dts-bundle 来生成。
+    types?: ITypes; // 仅需要在 language 为 typescript 时设置。module 的类型定义，用来类型提示，格式为 {[moduleName: string]: types string}，可以使用提供的工具包 dts-bundle 来生成。
     scope?: Scope; // 用来像 editor 注入代码依赖的的 module，以使代码可正常执行
-    language?: IEditorLanguage;
+    language?: IEditorLanguage; // 支持 typescript、JavaScript，当使用 JavaScript 时不需要设置 types
     // monaco-editor 的编译选项
     compilerOptions?: monaco.languages.typescript.CompilerOptions;
     // monaco-editor 实例编辑器时的选项
